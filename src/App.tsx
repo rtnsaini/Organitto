@@ -9,6 +9,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Finance from './pages/Finance';
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
 import ExpenseList from './pages/ExpenseList';
@@ -48,6 +49,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finance"
+            element={
+              <ProtectedRoute>
+                <Finance />
               </ProtectedRoute>
             }
           />
