@@ -62,60 +62,60 @@ export default function ApprovalModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-dark-brown/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-2xl shadow-soft-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <div className={`p-6 border-b-2 ${type === 'approve' ? 'border-sage/20 bg-sage/5' : 'border-soft-red/20 bg-soft-red/5'}`}>
+      <div className="relative bg-white rounded-2xl shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className={`p-6 border-b-2 ${type === 'approve' ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {type === 'approve' ? (
-                <div className="w-12 h-12 bg-sage/20 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-sage" />
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
                 </div>
               ) : (
-                <div className="w-12 h-12 bg-soft-red/20 rounded-full flex items-center justify-center">
-                  <XCircle className="w-6 h-6 text-soft-red" />
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <XCircle className="w-6 h-6 text-red-600" />
                 </div>
               )}
               <div>
-                <h2 className="font-heading text-2xl font-bold text-primary">
+                <h2 className="font-heading text-2xl font-bold text-gray-900">
                   {type === 'approve' ? 'Approve Expense' : 'Reject Expense'}
                 </h2>
-                <p className="text-sm text-dark-brown/60">
+                <p className="text-sm text-gray-600">
                   {type === 'approve' ? 'Confirm approval of this expense' : 'Please provide a reason'}
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-dark-brown/5 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-dark-brown/60" />
+              <X className="w-5 h-5 text-gray-600" />
             </button>
           </div>
         </div>
 
         <div className="p-6">
-          <div className="bg-cream/50 rounded-xl p-4 mb-6">
-            <h3 className="text-sm font-semibold text-dark-brown/60 mb-3">Expense Details</h3>
+          <div className="bg-gray-50 rounded-xl p-4 mb-6">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3">Expense Details</h3>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-dark-brown/70">Category:</span>
-                <span className="font-semibold text-dark-brown">
+                <span className="text-gray-600">Category:</span>
+                <span className="font-semibold text-gray-900">
                   {getCategoryLabel(expense.category)}
                   {expense.subcategory && ` - ${expense.subcategory}`}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-dark-brown/70">Amount:</span>
-                <span className="font-bold text-secondary text-xl">
+                <span className="text-gray-600">Amount:</span>
+                <span className="font-bold text-orange-600 text-xl">
                   ₹{expense.amount.toLocaleString('en-IN')}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-dark-brown/70">Date:</span>
-                <span className="font-semibold text-dark-brown">
+                <span className="text-gray-600">Date:</span>
+                <span className="font-semibold text-gray-900">
                   {new Date(expense.expense_date).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -124,8 +124,8 @@ export default function ApprovalModal({
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-dark-brown/70">Payment:</span>
-                <span className="font-semibold text-dark-brown uppercase">
+                <span className="text-gray-600">Payment:</span>
+                <span className="font-semibold text-gray-900 uppercase">
                   {expense.payment_mode.replace('_', ' ')}
                 </span>
               </div>
@@ -135,13 +135,13 @@ export default function ApprovalModal({
           {type === 'reject' ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-dark-brown mb-2">
-                  Reason for Rejection <span className="text-soft-red">*</span>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Reason for Rejection <span className="text-red-600">*</span>
                 </label>
                 <select
                   value={selectedReason}
                   onChange={(e) => setSelectedReason(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-dark-brown/10 rounded-xl focus:border-soft-red focus:outline-none focus:ring-2 focus:ring-soft-red/20 transition-all duration-300"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 transition-all duration-300"
                 >
                   <option value="">Select a reason</option>
                   {REJECTION_REASONS.map((reason) => (
@@ -154,7 +154,7 @@ export default function ApprovalModal({
 
               {selectedReason === 'Other (specify below)' && (
                 <div>
-                  <label className="block text-sm font-semibold text-dark-brown mb-2">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Specify Reason
                   </label>
                   <textarea
@@ -162,21 +162,21 @@ export default function ApprovalModal({
                     onChange={(e) => setCustomReason(e.target.value)}
                     placeholder="Please provide detailed reason..."
                     rows={3}
-                    className="w-full px-4 py-3 border-2 border-dark-brown/10 rounded-xl focus:border-soft-red focus:outline-none focus:ring-2 focus:ring-soft-red/20 transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 transition-all duration-300 resize-none"
                   />
                 </div>
               )}
 
-              <div className="flex items-start gap-2 p-3 bg-soft-red/10 border border-soft-red/30 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-soft-red flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-soft-red">
+              <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">
                   The submitter will be notified of this rejection and the reason provided.
                 </p>
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-semibold text-dark-brown mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Comments (Optional)
               </label>
               <textarea
@@ -184,7 +184,7 @@ export default function ApprovalModal({
                 onChange={(e) => setComments(e.target.value)}
                 placeholder="Add any comments or notes..."
                 rows={3}
-                className="w-full px-4 py-3 border-2 border-dark-brown/10 rounded-xl focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/20 transition-all duration-300 resize-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none"
               />
             </div>
           )}
@@ -193,17 +193,17 @@ export default function ApprovalModal({
             <button
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-6 py-3 border-2 border-dark-brown/20 text-dark-brown font-bold rounded-xl hover:bg-dark-brown/5 transition-all duration-300 disabled:opacity-50"
+              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 shadow-sm"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirm}
               disabled={loading}
-              className={`flex-1 px-6 py-3 text-white font-bold rounded-xl shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`flex-1 px-6 py-3 font-bold rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
                 type === 'approve'
-                  ? 'bg-gradient-to-r from-sage via-primary to-sage bg-[length:200%_100%] hover:bg-[position:100%_0]'
-                  : 'bg-gradient-to-r from-red-500 via-red-600 to-red-500 bg-[length:200%_100%] hover:bg-[position:100%_0]'
+                  ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white'
+                  : 'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white'
               }`}
             >
               {loading ? 'Processing...' : type === 'approve' ? 'Confirm Approval' : 'Confirm Rejection'}
