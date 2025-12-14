@@ -22,9 +22,9 @@ export default function Landing() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-gold blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700"></div>
                 <img
-                  src="/whatsapp_image_2025-10-29_at_11.28.27.jpeg"
+                  src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
                   alt="Organitto - The Organic Choice"
-                  className="h-32 md:h-40 w-auto object-contain logo-transparent relative z-10 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-500"
+                  className="h-32 md:h-40 w-auto object-contain relative z-10 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
             </div>
@@ -56,7 +56,7 @@ export default function Landing() {
               </PremiumButton>
 
               <PremiumButton
-                variant="outline"
+                variant="gold"
                 size="lg"
                 onClick={() => navigate('/login')}
                 className="min-w-[220px] text-lg"

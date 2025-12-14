@@ -59,9 +59,9 @@ export default function Login() {
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-gold blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
               <img
-                src="/whatsapp_image_2025-10-29_at_11.28.27.jpeg"
+                src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
                 alt="Organitto - The Organic Choice"
-                className="h-20 w-auto object-contain logo-transparent-light relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                className="h-20 w-auto object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           </div>

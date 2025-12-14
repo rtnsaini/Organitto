@@ -46,9 +46,9 @@ export default function Header() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-gold blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
               <img
-                src="/whatsapp_image_2025-10-29_at_11.28.27.jpeg"
+                src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
                 alt="Organitto - The Organic Choice"
-                className="h-12 md:h-14 w-auto object-contain logo-transparent relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                className="h-12 md:h-14 w-auto object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           </Link>
