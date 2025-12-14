@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Package, AlertTriangle, CheckCircle, Clock, QrCode } from 'lucide-react';
-import Header from '../components/Header';
 import AddBatchModal from '../components/AddBatchModal';
 import { supabase } from '../lib/supabase';
 import { format, differenceInDays } from 'date-fns';
@@ -137,7 +136,6 @@ export default function Batches() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
       <FloatingLeaves />
-      <Header />
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         <GlassCard className="mb-8 relative overflow-hidden">

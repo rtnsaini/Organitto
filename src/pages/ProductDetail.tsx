@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, ArrowRight, Share2, Archive, FileText, Leaf, TestTube, Package as PackageIcon, CheckSquare, MessageSquare, FolderOpen } from 'lucide-react';
-import Header from '../components/Header';
 import EditProductModal from '../components/EditProductModal';
 import OverviewTab from '../components/product-detail/OverviewTab';
 import IngredientsTab from '../components/product-detail/IngredientsTab';
@@ -161,7 +160,6 @@ export default function ProductDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <p className="text-center text-dark-brown/50">Loading product...</p>
         </div>
@@ -172,7 +170,6 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <p className="text-center text-dark-brown/50">Product not found</p>
         </div>
@@ -185,8 +182,6 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/products')}

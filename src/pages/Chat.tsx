@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
-import Header from '../components/Header';
 import ChatMessageArea from '../components/chat/ChatMessageArea';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -52,8 +51,7 @@ export default function Chat() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream">
-        <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-73px)]">
+        <div className="flex items-center justify-center h-screen">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
@@ -63,9 +61,8 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
       <FloatingLeaves />
-      <Header />
 
-      <div className="relative z-10 h-[calc(100vh-73px)] flex">
+      <div className="relative z-10 h-screen flex">
         <div className="w-80 glass-card border-r-2 border-primary/10 flex flex-col">
           <div className="p-6 border-b-2 border-primary/10">
             <div className="flex items-center gap-3 mb-4">

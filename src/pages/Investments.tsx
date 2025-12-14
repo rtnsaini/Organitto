@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Plus, Users, TrendingUp, BarChart3, List, Edit2, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header';
 import AddInvestmentModal from '../components/AddInvestmentModal';
 import InvestmentCard from '../components/InvestmentCard';
 import InvestmentHistory from '../components/InvestmentHistory';
@@ -227,9 +226,7 @@ export default function Investments() {
         }}
       />
 
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
             <div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Save, Download, Calculator, Plus, Trash2 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts';
-import Header from '../components/Header';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -291,8 +290,6 @@ export default function CostCalculator() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">

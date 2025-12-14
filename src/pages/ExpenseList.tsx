@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Filter, Search, Eye, CheckCircle, XCircle, Edit2, Trash2, Download, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header';
 import ApprovalModal from '../components/ApprovalModal';
 import BillViewer from '../components/BillViewer';
 import { format } from 'date-fns';
@@ -328,9 +327,7 @@ export default function ExpenseList() {
         }}
       />
 
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
             <div>

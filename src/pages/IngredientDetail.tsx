@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, Trash2, Plus, BarChart3, Package, Beaker, TrendingUp, FileText } from 'lucide-react';
-import Header from '../components/Header';
 import IngredientOverviewTab from '../components/ingredient-detail/IngredientOverviewTab';
 import IngredientPurchaseHistoryTab from '../components/ingredient-detail/IngredientPurchaseHistoryTab';
 import IngredientUsageTab from '../components/ingredient-detail/IngredientUsageTab';
@@ -116,7 +115,6 @@ export default function IngredientDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -130,7 +128,6 @@ export default function IngredientDetail() {
   if (!ingredient) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <p className="text-xl text-dark-brown/60">Ingredient not found</p>
@@ -153,8 +150,6 @@ export default function IngredientDetail() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/ingredients')}

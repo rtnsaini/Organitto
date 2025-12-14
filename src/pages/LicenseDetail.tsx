@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, CheckSquare, Clock, FileSearch, Edit, Trash2 } from 'lucide-react';
-import Header from '../components/Header';
 import LicenseDetailsTab from '../components/license-detail/LicenseDetailsTab';
 import LicenseDocumentsTab from '../components/license-detail/LicenseDocumentsTab';
 import LicenseComplianceTab from '../components/license-detail/LicenseComplianceTab';
@@ -107,7 +106,6 @@ export default function LicenseDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -121,7 +119,6 @@ export default function LicenseDetail() {
   if (!license) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <p className="text-xl text-dark-brown/60">License not found</p>
@@ -145,8 +142,6 @@ export default function LicenseDetail() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/compliance')}

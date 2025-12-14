@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, Trash2, Star, BarChart3, CreditCard, Receipt, List, FileText, MessageSquare } from 'lucide-react';
-import Header from '../components/Header';
 import VendorOverviewTab from '../components/vendor-detail/VendorOverviewTab';
 import VendorTransactionsTab from '../components/vendor-detail/VendorTransactionsTab';
 import VendorInvoicesTab from '../components/vendor-detail/VendorInvoicesTab';
@@ -98,7 +97,6 @@ export default function VendorDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -112,7 +110,6 @@ export default function VendorDetail() {
   if (!vendor) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <p className="text-xl text-dark-brown/60">Vendor not found</p>
@@ -130,8 +127,6 @@ export default function VendorDetail() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/vendors')}

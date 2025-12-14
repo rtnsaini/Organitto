@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Grid3x3, List, Phone, Mail, Star, TrendingUp, Users, AlertCircle, Award } from 'lucide-react';
-import Header from '../components/Header';
 import AddVendorModal from '../components/AddVendorModal';
 import { supabase } from '../lib/supabase';
 
@@ -129,8 +128,6 @@ export default function Vendors() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>

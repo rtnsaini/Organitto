@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Upload, X, Check, Loader, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header';
 
 interface Vendor {
   id: string;
@@ -226,9 +225,7 @@ export default function AddExpense() {
         }}
       />
 
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
             <h2 className="font-heading text-4xl font-bold text-primary mb-2">

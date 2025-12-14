@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, X, Check, Loader, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header';
 
 interface Vendor {
   id: string;
@@ -271,8 +270,7 @@ export default function EditExpense() {
   if (loadingExpense) {
     return (
       <div className="min-h-screen bg-cream">
-        <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-73px)]">
+        <div className="flex items-center justify-center h-screen">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
@@ -288,9 +286,7 @@ export default function EditExpense() {
         }}
       />
 
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
             <button

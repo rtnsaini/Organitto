@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Users, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
-import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { PremiumButton } from '../components/ui';
@@ -176,7 +175,6 @@ export default function UserApprovals() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-mesh">
-        <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-96">
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
@@ -188,7 +186,6 @@ export default function UserApprovals() {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">

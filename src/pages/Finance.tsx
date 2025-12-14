@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Receipt, PiggyBank, Calendar } from 'lucide-react';
-import Header from '../components/Header';
 import StatsCard from '../components/StatsCard';
 import ExpenseCategoryChart from '../components/ExpenseCategoryChart';
 import InvestmentExpenseChart from '../components/InvestmentExpenseChart';
@@ -106,21 +105,16 @@ export default function Finance() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-mesh">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center h-96">
-            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-          </div>
-        </main>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-96">
+          <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-mesh">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 page-transition">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-colored">
@@ -201,7 +195,6 @@ export default function Finance() {
             </div>
           </div>
         )}
-      </main>
     </div>
   );
 }

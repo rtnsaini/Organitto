@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, Lock, Save, AlertCircle, CheckCircle, Shield } from 'lucide-react';
-import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Settings() {
@@ -115,8 +114,6 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Header />
-
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">

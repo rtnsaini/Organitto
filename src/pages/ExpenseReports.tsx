@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { BarChart3, PieChart, Users, Calendar, Store, TrendingUp } from 'lucide-react';
-import Header from '../components/Header';
 import { supabase } from '../lib/supabase';
 import OverviewTab from '../components/reports/OverviewTab';
 import CategoryAnalysisTab from '../components/reports/CategoryAnalysisTab';
@@ -80,9 +79,7 @@ export default function ExpenseReports() {
         }}
       />
 
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h2 className="font-heading text-5xl font-bold text-primary mb-2">
