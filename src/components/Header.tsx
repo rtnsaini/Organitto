@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle, Moon, Sun } from 'lucide-react';
+import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle, Moon, Sun, LayoutDashboard, DollarSign, Calculator, Users, Layers, Wheat, ClipboardCheck, MessagesSquare } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
@@ -103,10 +103,11 @@ export default function Header() {
   };
 
   const navLinks = [
-    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     {
       name: 'Finance',
       path: '/finance',
+      icon: DollarSign,
       submenu: [
         { name: 'Add Expense', path: '/expenses/add' },
         { name: 'Expense List', path: '/expenses' },
@@ -114,13 +115,13 @@ export default function Header() {
         { name: 'Investments', path: '/investments' },
       ]
     },
-    { name: 'Products', path: '/products' },
-    { name: 'Calculator', path: '/calculator' },
-    { name: 'Vendors', path: '/vendors' },
-    { name: 'Batches', path: '/batches' },
-    { name: 'Ingredients', path: '/ingredients' },
-    { name: 'Compliance', path: '/compliance' },
-    { name: 'Chat', path: '/chat' },
+    { name: 'Products', path: '/products', icon: Package },
+    { name: 'Calculator', path: '/calculator', icon: Calculator },
+    { name: 'Vendors', path: '/vendors', icon: Users },
+    { name: 'Batches', path: '/batches', icon: Layers },
+    { name: 'Ingredients', path: '/ingredients', icon: Wheat },
+    { name: 'Compliance', path: '/compliance', icon: ClipboardCheck },
+    { name: 'Chat', path: '/chat', icon: MessagesSquare },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -142,61 +143,70 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <div key={link.path} className="relative">
-                {link.submenu ? (
-                  <>
-                    <button
-                      onMouseEnter={() => setShowFinanceMenu(true)}
-                      onMouseLeave={() => setShowFinanceMenu(false)}
-                      className={`px-5 py-2.5 rounded-button font-semibold transition-all duration-300 flex items-center gap-1.5 ${
-                        isFinanceActive()
-                          ? 'bg-gradient-primary text-white shadow-colored'
-                          : 'text-primary hover:bg-primary/5 hover:shadow-sm'
-                      }`}
-                    >
-                      {link.name}
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showFinanceMenu ? 'rotate-180' : ''}`} />
-                    </button>
-                    {showFinanceMenu && (
-                      <div
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <div key={link.path} className="relative">
+                  {link.submenu ? (
+                    <>
+                      <button
                         onMouseEnter={() => setShowFinanceMenu(true)}
                         onMouseLeave={() => setShowFinanceMenu(false)}
-                        className="absolute top-full left-0 mt-2 w-52 glass-card border border-white/20 overflow-hidden z-50 animate-slide-down"
+                        className={`px-4 py-2.5 rounded-button font-semibold transition-all duration-300 flex items-center gap-2 group ${
+                          isFinanceActive()
+                            ? 'bg-gradient-primary text-white shadow-colored scale-105'
+                            : 'text-primary hover:bg-gradient-primary/10 hover:shadow-soft hover:scale-105'
+                        }`}
                       >
-                        {link.submenu.map((sublink) => (
-                          <Link
-                            key={sublink.path}
-                            to={sublink.path}
-                            className={`block px-4 py-3 text-sm font-medium transition-all duration-300 ${
-                              isActive(sublink.path)
-                                ? 'bg-primary/10 text-primary'
-                                : 'text-dark-brown hover:bg-primary/10 hover:text-primary'
-                            }`}
-                          >
-                            {sublink.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    to={link.path}
-                    className={`px-5 py-2.5 rounded-button font-semibold transition-all duration-300 relative overflow-hidden group ${
-                      isActive(link.path)
-                        ? 'bg-gradient-primary text-white shadow-colored'
-                        : 'text-primary hover:bg-primary/5 hover:shadow-sm'
-                    }`}
-                  >
-                    <span className="relative z-10">{link.name}</span>
-                    {!isActive(link.path) && (
-                      <span className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
-                    )}
-                  </Link>
-                )}
-              </div>
-            ))}
+                        {Icon && <Icon className={`w-4 h-4 transition-transform duration-300 ${isFinanceActive() ? '' : 'group-hover:scale-110'}`} />}
+                        <span>{link.name}</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showFinanceMenu ? 'rotate-180' : ''}`} />
+                      </button>
+                      {showFinanceMenu && (
+                        <div
+                          onMouseEnter={() => setShowFinanceMenu(true)}
+                          onMouseLeave={() => setShowFinanceMenu(false)}
+                          className="absolute top-full left-0 mt-2 w-56 glass-card border border-white/20 overflow-hidden z-50 animate-slide-down shadow-soft-lg"
+                        >
+                          {link.submenu.map((sublink) => (
+                            <Link
+                              key={sublink.path}
+                              to={sublink.path}
+                              className={`block px-5 py-3.5 text-sm font-semibold transition-all duration-300 hover:translate-x-1 ${
+                                isActive(sublink.path)
+                                  ? 'bg-gradient-primary/15 text-primary border-l-4 border-primary shadow-sm'
+                                  : 'text-dark-brown hover:bg-gradient-primary/10 hover:text-primary hover:border-l-4 hover:border-primary/30'
+                              }`}
+                            >
+                              {sublink.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={`px-4 py-2.5 rounded-button font-semibold transition-all duration-300 relative overflow-hidden group flex items-center gap-2 ${
+                        isActive(link.path)
+                          ? 'bg-gradient-primary text-white shadow-colored scale-105'
+                          : 'text-primary hover:bg-gradient-primary/10 hover:shadow-soft hover:scale-105'
+                      }`}
+                    >
+                      {Icon && (
+                        <Icon className={`w-4 h-4 relative z-10 transition-transform duration-300 ${
+                          isActive(link.path) ? '' : 'group-hover:scale-110 group-hover:rotate-3'
+                        }`} />
+                      )}
+                      <span className="relative z-10">{link.name}</span>
+                      {!isActive(link.path) && (
+                        <span className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+                      )}
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -360,41 +370,51 @@ export default function Header() {
         </div>
 
         {showMobileMenu && (
-          <nav className="lg:hidden py-4 border-t-2 border-primary/10">
+          <nav className="lg:hidden py-4 border-t-2 border-primary/10 animate-slide-down">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <div key={link.path}>
-                  <Link
-                    to={link.path}
-                    onClick={() => !link.submenu && setShowMobileMenu(false)}
-                    className={`block px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                      isActive(link.path) || (link.name === 'Finance' && isFinanceActive())
-                        ? 'bg-primary text-cream shadow-soft'
-                        : 'text-dark-brown hover:bg-primary/10 hover:text-primary'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                  {link.submenu && (
-                    <div className="ml-4 mt-2 flex flex-col gap-2">
-                      {link.submenu.map((sublink) => (
-                        <Link
-                          key={sublink.path}
-                          to={sublink.path}
-                          onClick={() => setShowMobileMenu(false)}
-                          className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                            isActive(sublink.path)
-                              ? 'bg-primary/20 text-primary'
-                              : 'text-dark-brown/70 hover:bg-primary/10 hover:text-primary'
-                          }`}
-                        >
-                          {sublink.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <div key={link.path}>
+                    <Link
+                      to={link.path}
+                      onClick={() => !link.submenu && setShowMobileMenu(false)}
+                      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold transition-all duration-300 group ${
+                        isActive(link.path) || (link.name === 'Finance' && isFinanceActive())
+                          ? 'bg-gradient-primary text-white shadow-colored scale-105'
+                          : 'text-primary hover:bg-gradient-primary/10 hover:shadow-soft hover:scale-105 hover:translate-x-1'
+                      }`}
+                    >
+                      {Icon && (
+                        <Icon className={`w-5 h-5 transition-transform duration-300 ${
+                          isActive(link.path) || (link.name === 'Finance' && isFinanceActive())
+                            ? ''
+                            : 'group-hover:scale-110 group-hover:rotate-3'
+                        }`} />
+                      )}
+                      <span>{link.name}</span>
+                    </Link>
+                    {link.submenu && (
+                      <div className="ml-4 mt-2 flex flex-col gap-2 pl-4 border-l-2 border-primary/20">
+                        {link.submenu.map((sublink) => (
+                          <Link
+                            key={sublink.path}
+                            to={sublink.path}
+                            onClick={() => setShowMobileMenu(false)}
+                            className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 hover:translate-x-1 ${
+                              isActive(sublink.path)
+                                ? 'bg-gradient-primary/15 text-primary border-l-4 border-primary shadow-sm'
+                                : 'text-dark-brown/80 hover:bg-gradient-primary/10 hover:text-primary hover:border-l-4 hover:border-primary/30'
+                            }`}
+                          >
+                            {sublink.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </nav>
         )}
