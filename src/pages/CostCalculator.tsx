@@ -303,7 +303,7 @@ export default function CostCalculator() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowSaveModal(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sage to-primary text-white rounded-xl font-semibold hover:shadow-soft transition-all"
+                className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all hover:bg-accent/90"
               >
                 <Save className="w-5 h-5" />
                 Save Calculation
@@ -943,7 +943,7 @@ export default function CostCalculator() {
               </button>
               <button
                 onClick={handleSaveCalculation}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-sage to-primary text-white font-semibold rounded-xl hover:shadow-soft-lg transition-all"
+                className="flex-1 px-6 py-3 bg-accent text-white font-semibold rounded-xl hover:shadow-soft-lg transition-all hover:bg-accent/90"
               >
                 Save
               </button>
