@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Edit, ArrowRight, Archive, MessageSquare, Paperclip, CheckSquare, Clock } from 'lucide-react';
 import { differenceInDays, format } from 'date-fns';
@@ -26,8 +25,6 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, users, onDragStart, onEdit, onMoveNext }: ProductCardProps) {
   const navigate = useNavigate();
-  const [showActions, setShowActions] = useState(false);
-
   const daysInStage = differenceInDays(new Date(), new Date(product.stage_entered_at));
 
   const getPriorityBadge = () => {
@@ -69,8 +66,6 @@ export default function ProductCard({ product, users, onDragStart, onEdit, onMov
     <div
       draggable
       onDragStart={() => onDragStart(product)}
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
       className="bg-white rounded-xl shadow-soft p-4 mb-3 cursor-move hover:shadow-soft-lg transition-all duration-300 border-2 border-transparent hover:border-accent/30 relative group"
     >
       <div className="absolute top-2 right-2 z-10">
@@ -149,7 +144,7 @@ export default function ProductCard({ product, users, onDragStart, onEdit, onMov
         </div>
       )}
 
-      <div className="flex items-center gap-3 text-xs text-dark-brown/60">
+      <div className="flex items-center gap-3 text-xs text-dark-brown/60 mb-3">
         <span className="flex items-center gap-1">
           <CheckSquare className="w-3 h-3" />
           0/0
@@ -164,31 +159,28 @@ export default function ProductCard({ product, users, onDragStart, onEdit, onMov
         </span>
       </div>
 
-      {showActions && (
-        <div className="absolute inset-0 bg-primary/95 rounded-xl flex items-center justify-center gap-2 p-4">
-          <button
-            onClick={() => navigate(`/products/${product.id}`)}
-            className="flex flex-col items-center gap-1 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white"
-          >
-            <Eye className="w-5 h-5" />
-            <span className="text-xs font-semibold">View</span>
-          </button>
-          <button
-            onClick={() => onEdit(product)}
-            className="flex flex-col items-center gap-1 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white"
-          >
-            <Edit className="w-5 h-5" />
-            <span className="text-xs font-semibold">Edit</span>
-          </button>
-          <button
-            onClick={() => onMoveNext(product)}
-            className="flex flex-col items-center gap-1 px-3 py-2 bg-accent hover:bg-accent/80 rounded-lg transition-colors text-white"
-          >
-            <ArrowRight className="w-5 h-5" />
-            <span className="text-xs font-semibold">Next</span>
-          </button>
-        </div>
-      )}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate(`/products/${product.id}`)}
+          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors text-xs font-semibold"
+        >
+          <Eye className="w-4 h-4" />
+          View
+        </button>
+        <button
+          onClick={() => onEdit(product)}
+          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-accent/10 hover:bg-accent/20 text-accent rounded-lg transition-colors text-xs font-semibold"
+        >
+          <Edit className="w-4 h-4" />
+          Edit
+        </button>
+        <button
+          onClick={() => onMoveNext(product)}
+          className="flex items-center justify-center gap-1 px-3 py-2 bg-sage/10 hover:bg-sage/20 text-sage rounded-lg transition-colors text-xs font-semibold"
+        >
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }

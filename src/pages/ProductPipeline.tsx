@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, LayoutGrid, List, Filter, Package, Rocket, CheckCircle, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, LayoutGrid, List, Filter, Package, Rocket, CheckCircle, AlertTriangle, Eye, Edit } from 'lucide-react';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
 import AddProductModal from '../components/AddProductModal';
@@ -21,6 +22,7 @@ const stages = [
 
 export default function ProductPipeline() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [view, setView] = useState<'board' | 'list'>('board');
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -217,13 +219,22 @@ export default function ProductPipeline() {
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="max-w-[1800px] mx-auto">
-          <div className="mb-8">
-            <h2 className="font-heading text-5xl font-bold text-primary mb-2">
-              Product Development Pipeline
-            </h2>
-            <p className="text-dark-brown/70 text-lg">
-              Track your Ayurvedic products from concept to launch
-            </p>
+          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 className="font-heading text-5xl font-bold text-primary mb-2">
+                Product Development Pipeline
+              </h2>
+              <p className="text-dark-brown/70 text-lg">
+                Track your Ayurvedic products from concept to launch
+              </p>
+            </div>
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-sage to-primary text-white rounded-xl font-bold text-lg shadow-soft-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            >
+              <Plus className="w-6 h-6" />
+              Add New Product
+            </button>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -369,6 +380,7 @@ export default function ProductPipeline() {
                       <th className="px-4 py-3 text-left text-sm font-semibold text-dark-brown">Progress</th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-dark-brown">Days in Stage</th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-dark-brown">Target Launch</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-dark-brown">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -433,6 +445,24 @@ export default function ProductPipeline() {
                             <span className="text-sm text-dark-brown/70">
                               {product.target_launch_date || '-'}
                             </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => navigate(`/products/${product.id}`)}
+                                className="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleEdit(product)}
+                                className="p-2 bg-accent/10 hover:bg-accent/20 text-accent rounded-lg transition-colors"
+                                title="Edit Product"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
