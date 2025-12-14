@@ -169,6 +169,22 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment guide.
 4. Configure database backups
 5. Set up connection pooling for better performance
 
+### Required Supabase Configuration
+
+After applying migrations, configure these settings in your Supabase Dashboard:
+
+1. **Auth Connection Strategy** (Database Settings → Connection Pooling)
+   - Switch from fixed connection limit to percentage-based allocation
+   - This ensures Auth server performance scales with instance size
+   - Navigate to: Settings → Database → Connection Pooling
+
+2. **Password Protection** (Auth Settings → Security)
+   - Enable leaked password protection (HaveIBeenPwned.org integration)
+   - This prevents users from using compromised passwords
+   - Navigate to: Authentication → Settings → Security
+
+These settings cannot be configured via migrations and require manual dashboard configuration.
+
 ## 🔧 Technology Stack
 
 ### Frontend
@@ -256,6 +272,8 @@ All database tables have RLS enabled with policies that:
 - Admins have elevated permissions
 - Sensitive operations require authentication
 - Public access is explicitly defined
+
+**Note on Multiple Policies**: Some tables have multiple permissive policies for the same action (e.g., "Users can read own data" OR "Admins can read all data"). This is intentional and implements proper role-based access control. Multiple permissive policies are combined with OR logic, allowing either condition to grant access.
 
 ### Authentication
 
