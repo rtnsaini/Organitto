@@ -216,23 +216,43 @@ export default function Finance() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="glass-card p-6">
-            <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Expense by Category
-            </h2>
-            <ExpenseCategoryChart />
-          </div>
+        {!loading && expenseSummary.byCategory.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="glass-card p-6">
+              <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Expense by Category
+              </h2>
+              <ExpenseCategoryChart
+                data={expenseSummary.byCategory.map(cat => ({
+                  name: cat.category,
+                  value: cat.total
+                }))}
+              />
+            </div>
 
-          <div className="glass-card p-6">
-            <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-              <TrendingDown className="w-5 h-5" />
-              Investment vs Expenses
-            </h2>
-            <InvestmentExpenseChart />
+            <div className="glass-card p-6">
+              <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+                <TrendingDown className="w-5 h-5" />
+                Monthly Overview
+              </h2>
+              <InvestmentExpenseChart
+                data={[
+                  {
+                    month: 'Last Month',
+                    investments: investmentSummary.total - investmentSummary.thisMonth,
+                    expenses: expenseSummary.lastMonth
+                  },
+                  {
+                    month: 'This Month',
+                    investments: investmentSummary.thisMonth,
+                    expenses: expenseSummary.thisMonth
+                  }
+                ]}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="glass-card p-6">
           <div className="flex items-center justify-between mb-6">
