@@ -174,12 +174,12 @@ export default function Header() {
   const isFinanceActive = () => location.pathname.startsWith('/expenses') || location.pathname.startsWith('/investments') || location.pathname === '/finance';
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-[20px] bg-[rgba(255,255,255,0.95)] border-b border-[rgba(45,80,22,0.08)]">
-      <div className="container mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/dashboard" className="flex items-center gap-3 group">
-            <div className="text-3xl">🌿</div>
-            <span className="text-2xl font-bold text-[#2D5016] heading-serif">Organitto</span>
+    <header className="sticky top-0 z-50 backdrop-blur-[12px] bg-[rgba(255,255,255,0.95)] border-b border-[rgba(0,0,0,0.06)]">
+      <div className="container mx-auto px-6">
+        <div className="flex items-center justify-between h-[60px]">
+          <Link to="/dashboard" className="flex items-center gap-2 group">
+            <div className="text-xl">🌿</div>
+            <span className="text-[1.25rem] font-semibold text-[#2D5016] heading-serif">Organitto</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
@@ -192,15 +192,15 @@ export default function Header() {
                       <button
                         onMouseEnter={() => setShowFinanceMenu(true)}
                         onMouseLeave={() => setShowFinanceMenu(false)}
-                        className={`px-4 py-2 rounded-[10px] font-medium transition-all duration-200 flex items-center gap-2 text-[0.9375rem] ${
+                        className={`px-3 py-1.5 rounded-lg font-medium transition-all duration-150 flex items-center gap-1.5 text-[0.875rem] ${
                           isFinanceActive()
-                            ? 'bg-[#E8F5E9] text-[#2D5016] font-semibold'
-                            : 'text-[#4A4A4A] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
+                            ? 'bg-[#E8F5E9] text-[#2D5016]'
+                            : 'text-[#6B7280] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
                         }`}
                       >
-                        {Icon && <Icon className={`w-4 h-4 transition-transform duration-300 ${isFinanceActive() ? '' : 'group-hover:scale-110'}`} />}
+                        {Icon && <Icon className="w-4 h-4" />}
                         <span>{link.name}</span>
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showFinanceMenu ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${showFinanceMenu ? 'rotate-180' : ''}`} />
                       </button>
                       {showFinanceMenu && (
                         <div
@@ -227,25 +227,18 @@ export default function Header() {
                   ) : (
                     <Link
                       to={link.path}
-                      className={`px-4 py-2 rounded-[10px] font-medium transition-all duration-200 flex items-center gap-2 text-[0.9375rem] relative ${
+                      className={`px-3 py-1.5 rounded-lg font-medium transition-all duration-150 flex items-center gap-1.5 text-[0.875rem] ${
                         isActive(link.path)
-                          ? 'bg-[#E8F5E9] text-[#2D5016] font-semibold'
-                          : 'text-[#4A4A4A] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
+                          ? 'bg-[#E8F5E9] text-[#2D5016]'
+                          : 'text-[#6B7280] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
                       }`}
                     >
-                      {Icon && (
-                        <Icon className={`w-4 h-4 relative z-10 transition-transform duration-300 ${
-                          isActive(link.path) ? '' : 'group-hover:scale-110 group-hover:rotate-3'
-                        }`} />
-                      )}
-                      <span className="relative z-10">{link.name}</span>
+                      {Icon && <Icon className="w-4 h-4" />}
+                      <span>{link.name}</span>
                       {(link as any).badge && (
-                        <span className="relative z-10 ml-1 px-2 py-0.5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full shadow-sm animate-pulse">
+                        <span className="ml-1 px-1.5 py-0.5 bg-gradient-gold text-primary-dark text-[0.625rem] font-semibold rounded-full animate-pulse">
                           {(link as any).badge}
                         </span>
-                      )}
-                      {!isActive(link.path) && (
-                        <span className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                       )}
                     </Link>
                   )}
@@ -254,15 +247,15 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[rgba(45,80,22,0.08)] text-[#4A4A4A] hover:bg-[#F5F7F5] hover:text-[#2D5016] hover:border-[rgba(45,80,22,0.12)] transition-all duration-200"
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-[rgba(0,0,0,0.06)] text-[#6B7280] hover:bg-[#F5F7F5] hover:text-[#2D5016] hover:border-[rgba(0,0,0,0.08)] transition-all duration-150"
               >
-                <Bell className="w-5 h-5" />
+                <Bell className="w-4 h-4" />
                 {notificationCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-[#EF4444] rounded-full border-2 border-white"></span>
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#EF4444] rounded-full border-2 border-white"></span>
                 )}
               </button>
 
@@ -335,27 +328,27 @@ export default function Header() {
 
             <button
               onClick={toggleDarkMode}
-              className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[rgba(45,80,22,0.08)] text-[#4A4A4A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-200"
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-[rgba(0,0,0,0.06)] text-[#6B7280] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-150"
               title="Toggle theme"
             >
               {isDarkMode ? (
-                <Sun className="w-5 h-5" />
+                <Sun className="w-4 h-4" />
               ) : (
-                <Moon className="w-5 h-5" />
+                <Moon className="w-4 h-4" />
               )}
             </button>
 
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-3 px-2 py-2 rounded-[10px] hover:bg-[rgba(45,80,22,0.05)] transition-all duration-200"
+                className="flex items-center gap-2 px-1.5 py-1.5 rounded-lg hover:bg-[rgba(45,80,22,0.05)] transition-all duration-150"
               >
-                <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#2D5016] to-[#4A7C3B] flex items-center justify-center text-white font-semibold text-sm">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2D5016] to-[#4A7C3B] flex items-center justify-center text-white font-semibold text-xs">
                   {user?.name?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-semibold text-[#1A1A1A]">{user?.name}</p>
-                  <p className="text-xs text-[#757575] capitalize">{user?.role}</p>
+                  <p className="text-xs font-semibold text-[#1A1A1A]">{user?.name}</p>
+                  <p className="text-[0.625rem] text-[#6B7280] capitalize">{user?.role}</p>
                 </div>
               </button>
 

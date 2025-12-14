@@ -104,15 +104,15 @@ export default function Dashboard() {
 
       <Header />
 
-      <div className="relative z-10 container mx-auto px-4 md:px-8 py-8 page-transition">
+      <div className="relative z-10 container mx-auto px-6 py-6 page-transition">
         <div className="max-w-7xl mx-auto">
           <div className="dashboard-hero">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <h1 className="greeting">
                   Namaste, <span className="greeting-accent">{user?.name || 'User'}</span>
                 </h1>
-                <p className="date-time mt-2">{currentDate}</p>
+                <p className="date-time mt-1">{currentDate}</p>
                 {user?.role === 'admin' && (
                   <div className="role-badge">
                     <Leaf className="w-3 h-3" />
@@ -121,8 +121,8 @@ export default function Dashboard() {
                 )}
               </div>
               <div className="text-right">
-                <p className="text-[#757575] text-sm uppercase tracking-wider font-medium mb-1">Net Balance</p>
-                <p className={`text-3xl md:text-4xl font-bold ${
+                <p className="text-[#6B7280] text-[0.6875rem] uppercase tracking-wider font-medium mb-1">Net Balance</p>
+                <p className={`text-2xl md:text-[1.875rem] font-semibold ${
                   netBalance >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'
                 }`}>
                   ₹{netBalance.toLocaleString('en-IN')}
@@ -131,7 +131,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 stagger-container">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6 stagger-container">
             <div className="stat-card hover-lift">
               <div className="label">Total Investments</div>
               <div className="number">₹{(stats.totalInvestments / 100000).toFixed(2)}L</div>
@@ -173,7 +173,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             <InvestmentExpenseChart data={monthlyData} />
             <ExpenseCategoryChart data={categoryData} />
           </div>

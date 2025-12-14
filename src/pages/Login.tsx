@@ -53,46 +53,48 @@ export default function Login() {
         <span className="hidden sm:inline">Back to Home</span>
       </button>
 
-      <div className="relative z-10 w-full max-w-lg">
-        <div className="glass-card p-10 md:p-12 animate-scale-in">
-          <div className="flex items-center justify-center mb-10 animate-float">
+      <div className="relative z-10 w-full max-w-md">
+        <div className="glass-card p-8 animate-scale-in">
+          <div className="flex items-center justify-center mb-8">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-gold blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-gold blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
               <img
                 src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
-                alt="Organitto - The Organic Choice"
-                className="h-20 w-auto object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                alt="Organitto"
+                className="h-16 w-auto object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-200"
               />
             </div>
           </div>
 
-          <h1 className="font-heading text-5xl font-bold text-gradient text-center mb-3">
-            Welcome Back
-          </h1>
-          <p className="text-primary/60 text-center mb-10 text-lg font-medium">
-            Sign in to continue your journey
-          </p>
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              Welcome back
+            </h1>
+            <p className="text-sm text-gray-600">
+              Sign in to your account
+            </p>
+          </div>
 
           {error && (
-            <div className="mb-8 p-5 bg-gradient-to-r from-red-50/90 to-red-100/90 backdrop-blur-sm border border-red-200 rounded-button flex items-start gap-3 animate-slide-down">
-              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-red-700 font-medium">{error}</p>
+            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 animate-slide-down">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-7">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-bold text-primary mb-3 ml-1">
-                Email Address
+              <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1.5">
+                Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40 z-10" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-float w-full pl-12"
+                  className="w-full h-10 pl-10 pr-4 text-sm border border-gray-200 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-all duration-150 focus:outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
                   placeholder="you@example.com"
                   required
                   disabled={loading}
@@ -101,17 +103,17 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-bold text-primary mb-3 ml-1">
+              <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40 z-10" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-float w-full pl-12"
+                  className="w-full h-10 pl-10 pr-4 text-sm border border-gray-200 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-all duration-150 focus:outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -119,30 +121,28 @@ export default function Login() {
               </div>
             </div>
 
-            <PremiumButton
+            <button
               type="submit"
-              variant="primary"
-              size="lg"
               disabled={loading}
-              className="w-full text-lg mt-8"
+              className="w-full h-10 mt-6 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-all duration-150 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </PremiumButton>
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-primary/70 font-medium">
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-gradient-gold font-bold hover:underline transition-all">
-                Create Account
+              <Link to="/register" className="text-primary font-semibold hover:text-primary-dark transition-colors">
+                Sign up
               </Link>
             </p>
           </div>
         </div>
 
-        <div className="text-center mt-8 glass-card inline-block px-6 py-3 mx-auto">
-          <p className="text-primary/50 text-sm font-medium flex items-center gap-2">
-            <Leaf className="w-4 h-4" />
+        <div className="text-center mt-6">
+          <p className="text-xs text-gray-500 flex items-center justify-center gap-1.5">
+            <Leaf className="w-3.5 h-3.5" />
             Organitto - Premium Ayurvedic Management
           </p>
         </div>
