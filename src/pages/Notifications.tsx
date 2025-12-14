@@ -3,6 +3,7 @@ import { Bell, Check, CheckCheck, Trash2, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
+import Header from '../components/Header';
 
 interface Notification {
   id: string;
@@ -115,15 +116,20 @@ export default function Notifications() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <>
+      <Header />
+      <div className="min-h-screen py-8">
+        <div className="container mx-auto px-4 max-w-4xl">
         <div className="glass-card p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -238,5 +244,6 @@ export default function Notifications() {
         )}
       </div>
     </div>
+    </>
   );
 }
