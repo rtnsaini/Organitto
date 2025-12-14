@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown } from 'lucide-react';
+import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
@@ -32,7 +32,10 @@ export default function Header() {
     { name: 'Products', path: '/products' },
     { name: 'Calculator', path: '/calculator' },
     { name: 'Vendors', path: '/vendors' },
-    { name: 'Documents', path: '/documents' },
+    { name: 'Batches', path: '/batches' },
+    { name: 'Ingredients', path: '/ingredients' },
+    { name: 'Compliance', path: '/compliance' },
+    { name: 'Chat', path: '/chat' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
