@@ -230,7 +230,7 @@ export default function ProductPipeline() {
             </div>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-sage to-primary text-white rounded-xl font-bold text-lg shadow-soft-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="flex items-center gap-3 px-6 py-4 bg-accent text-white rounded-xl font-bold text-lg shadow-soft-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-accent/90"
             >
               <Plus className="w-6 h-6" />
               Add New Product
