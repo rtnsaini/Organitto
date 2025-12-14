@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import OfflineBanner from './components/OfflineBanner';
 import UpdateNotification from './components/UpdateNotification';
+import FloatingActionButton from './components/FloatingActionButton';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -26,14 +27,17 @@ import LicenseDetail from './pages/LicenseDetail';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const { user } = useAuth();
+
+  const publicPaths = ['/', '/login', '/register'];
+  const isPublicRoute = publicPaths.includes(location.pathname);
+  const shouldShowFAB = user && !isPublicRoute;
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <OfflineBanner />
-        <PWAInstallPrompt />
-        <UpdateNotification />
-        <Routes>
+    <>
+      <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -182,7 +186,20 @@ function App() {
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      </Routes>
+      {shouldShowFAB && <FloatingActionButton />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <OfflineBanner />
+        <PWAInstallPrompt />
+        <UpdateNotification />
+        <AppContent />
       </AuthProvider>
     </BrowserRouter>
   );
