@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle } from 'lucide-react';
+import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
@@ -10,7 +10,35 @@ export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFinanceMenu, setShowFinanceMenu] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const notificationCount = 3;
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('organitto-theme');
+    const isDark = savedTheme === 'dark';
+    setIsDarkMode(isDark);
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    document.documentElement.style.transition = 'background-color 0.3s ease-in-out, color 0.3s ease-in-out';
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('organitto-theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('organitto-theme', 'light');
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -122,6 +150,21 @@ export default function Header() {
                   {notificationCount}
                 </span>
               )}
+            </button>
+
+            <button
+              onClick={toggleDarkMode}
+              className="relative p-2.5 text-primary hover:bg-primary/5 rounded-button transition-all duration-300 group overflow-hidden"
+              title="Toggle dark mode"
+            >
+              <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                {isDarkMode ? (
+                  <Sun className="w-5 h-5 transform group-hover:rotate-180 group-hover:scale-110 transition-all duration-500" />
+                ) : (
+                  <Moon className="w-5 h-5 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500" />
+                )}
+              </div>
             </button>
 
             <div className="relative">
