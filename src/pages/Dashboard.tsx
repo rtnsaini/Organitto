@@ -99,103 +99,76 @@ export default function Dashboard() {
   const netBalanceColor = netBalance >= 0 ? 'text-sage' : 'text-soft-red';
 
   return (
-    <div className="min-h-screen bg-[#0A1F0A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#F5F7F5] relative overflow-hidden">
       <FloatingLeaves />
 
       <Header />
 
-      <div className="relative z-10 container mx-auto px-4 md:px-8 py-8">
+      <div className="relative z-10 container mx-auto px-4 md:px-8 py-8 page-transition">
         <div className="max-w-7xl mx-auto">
-          <div className="dashboard-hero mb-8">
-            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-2xl shadow-[0_8px_24px_rgba(255,215,0,0.4)]">
-                  <Sparkles className="w-10 h-10 text-[#0A1F0A]" />
-                </div>
-                <div>
-                  <h1 className="hero-greeting text-3xl md:text-5xl">
-                    Namaste, {user?.name || 'User'}
-                  </h1>
-                  <p className="hero-subtitle mt-2">{currentDate}</p>
-                  {user?.role === 'admin' && (
-                    <div className="admin-badge mt-3">
-                      <Leaf className="w-4 h-4" />
-                      <span>Admin</span>
-                    </div>
-                  )}
-                </div>
+          <div className="dashboard-hero">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div>
+                <h1 className="greeting">
+                  Namaste, <span className="greeting-accent">{user?.name || 'User'}</span>
+                </h1>
+                <p className="date-time mt-2">{currentDate}</p>
+                {user?.role === 'admin' && (
+                  <div className="role-badge">
+                    <Leaf className="w-3 h-3" />
+                    <span>Admin</span>
+                  </div>
+                )}
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <div className="text-right">
-                  <p className="text-[#9CA3AF] text-sm uppercase tracking-wider font-semibold">Net Balance</p>
-                  <p className={`text-4xl font-black font-[JetBrains_Mono] bg-gradient-to-r ${
-                    netBalance >= 0 ? 'from-[#10B981] to-[#059669]' : 'from-[#EF4444] to-[#DC2626]'
-                  } bg-clip-text text-transparent`}>
-                    ₹{netBalance.toLocaleString('en-IN')}
-                  </p>
-                </div>
+              <div className="text-right">
+                <p className="text-[#757575] text-sm uppercase tracking-wider font-medium mb-1">Net Balance</p>
+                <p className={`text-3xl md:text-4xl font-bold ${
+                  netBalance >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'
+                }`}>
+                  ₹{netBalance.toLocaleString('en-IN')}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 stagger-container">
-            <div className="stat-card">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 stagger-container">
+            <div className="stat-card hover-lift">
               <div className="label">Total Investments</div>
               <div className="number">₹{(stats.totalInvestments / 100000).toFixed(2)}L</div>
-              <div className="trend mt-3">
-                <span className="text-xl">↑</span>
+              <div className="trend positive mt-2">
+                <span>↑</span>
                 <span>12%</span>
-                <span className="text-[#9CA3AF] text-xs ml-1">this month</span>
-              </div>
-              <div className="absolute top-6 right-6 opacity-20">
-                <Leaf className="w-12 h-12 text-[#FFD700]" />
+                <span className="text-[#757575] text-xs ml-1">this month</span>
               </div>
             </div>
 
-            <div className="stat-card">
+            <div className="stat-card hover-lift">
               <div className="label">Total Expenses</div>
-              <div className="number" style={{ background: 'linear-gradient(135deg, #FB923C 0%, #F97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                ₹{(stats.totalExpenses / 100000).toFixed(2)}L
-              </div>
-              <div className="trend mt-3" style={{ color: '#FB923C' }}>
-                <span className="text-xl">↓</span>
+              <div className="number">₹{(stats.totalExpenses / 100000).toFixed(2)}L</div>
+              <div className="trend negative mt-2">
+                <span>↓</span>
                 <span>8%</span>
-                <span className="text-[#9CA3AF] text-xs ml-1">vs last month</span>
-              </div>
-              <div className="absolute top-6 right-6 opacity-20">
-                <Receipt className="w-12 h-12 text-[#FB923C]" />
+                <span className="text-[#757575] text-xs ml-1">vs last month</span>
               </div>
             </div>
 
-            <div className="stat-card">
+            <div className="stat-card hover-lift">
               <div className="label">Net Balance</div>
-              <div className="number" style={{
-                background: netBalance >= 0 ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
+              <div className={`number ${netBalance >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
                 ₹{(Math.abs(netBalance) / 100000).toFixed(2)}L
               </div>
-              <div className="trend mt-3" style={{ color: netBalance >= 0 ? '#10B981' : '#EF4444' }}>
-                <span className="text-xl">{netBalance >= 0 ? '↑' : '↓'}</span>
+              <div className={`trend mt-2 ${netBalance >= 0 ? 'positive' : 'negative'}`}>
+                <span>{netBalance >= 0 ? '↑' : '↓'}</span>
                 <span>{netBalance >= 0 ? 'Positive' : 'Negative'}</span>
-              </div>
-              <div className="absolute top-6 right-6 opacity-20">
-                <Scale className="w-12 h-12 text-[#10B981]" />
               </div>
             </div>
 
-            <div className="stat-card">
+            <div className="stat-card hover-lift">
               <div className="label">Active Products</div>
-              <div className="number" style={{ background: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                {stats.activeProducts}
-              </div>
-              <div className="trend mt-3" style={{ color: '#A78BFA' }}>
-                <span className="text-xl">●</span>
+              <div className="number">{stats.activeProducts}</div>
+              <div className="trend mt-2 text-[#2D5016]">
+                <span>●</span>
                 <span>In Pipeline</span>
-              </div>
-              <div className="absolute top-6 right-6 opacity-20">
-                <TrendingUp className="w-12 h-12 text-[#A78BFA]" />
               </div>
             </div>
           </div>

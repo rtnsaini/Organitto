@@ -174,23 +174,12 @@ export default function Header() {
   const isFinanceActive = () => location.pathname.startsWith('/expenses') || location.pathname.startsWith('/investments') || location.pathname === '/finance';
 
   return (
-    <header className="sticky top-0 z-100 backdrop-blur-[20px] bg-[rgba(10,31,10,0.9)] border-b border-[rgba(255,215,0,0.1)] saturate-[180%]">
+    <header className="sticky top-0 z-50 backdrop-blur-[20px] bg-[rgba(255,255,255,0.95)] border-b border-[rgba(45,80,22,0.08)]">
       <div className="container mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           <Link to="/dashboard" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#10B981] blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
-              <img
-                src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
-                alt="Organitto - The Organic Choice"
-                className="h-12 md:h-16 w-auto object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_20px_rgba(255,215,0,0.3)]"
-              />
-            </div>
-            <div className="hidden md:block">
-              <h1 className="text-2xl font-black bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#10B981] bg-clip-text text-transparent">
-                Organitto
-              </h1>
-            </div>
+            <div className="text-3xl">🌿</div>
+            <span className="text-2xl font-bold text-[#2D5016] heading-serif">Organitto</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
@@ -203,10 +192,10 @@ export default function Header() {
                       <button
                         onMouseEnter={() => setShowFinanceMenu(true)}
                         onMouseLeave={() => setShowFinanceMenu(false)}
-                        className={`px-4 py-2.5 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 group ${
+                        className={`px-4 py-2 rounded-[10px] font-medium transition-all duration-200 flex items-center gap-2 text-[0.9375rem] ${
                           isFinanceActive()
-                            ? 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#0A1F0A] shadow-[0_4px_12px_rgba(255,215,0,0.4)]'
-                            : 'text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] hover:text-[#FFD700]'
+                            ? 'bg-[#E8F5E9] text-[#2D5016] font-semibold'
+                            : 'text-[#4A4A4A] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
                         }`}
                       >
                         {Icon && <Icon className={`w-4 h-4 transition-transform duration-300 ${isFinanceActive() ? '' : 'group-hover:scale-110'}`} />}
@@ -238,10 +227,10 @@ export default function Header() {
                   ) : (
                     <Link
                       to={link.path}
-                      className={`px-4 py-2.5 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden group flex items-center gap-2 ${
+                      className={`px-4 py-2 rounded-[10px] font-medium transition-all duration-200 flex items-center gap-2 text-[0.9375rem] relative ${
                         isActive(link.path)
-                          ? 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#0A1F0A] shadow-[0_4px_12px_rgba(255,215,0,0.4)]'
-                          : 'text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] hover:text-[#FFD700]'
+                          ? 'bg-[#E8F5E9] text-[#2D5016] font-semibold'
+                          : 'text-[#4A4A4A] hover:text-[#2D5016] hover:bg-[rgba(45,80,22,0.05)]'
                       }`}
                     >
                       {Icon && (
@@ -269,13 +258,11 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2.5 text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group"
+                className="relative w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[rgba(45,80,22,0.08)] text-[#4A4A4A] hover:bg-[#F5F7F5] hover:text-[#2D5016] hover:border-[rgba(45,80,22,0.12)] transition-all duration-200"
               >
-                <Bell className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" />
+                <Bell className="w-5 h-5" />
                 {notificationCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white text-xs font-bold rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(239,68,68,0.4)] animate-pulse">
-                    {notificationCount}
-                  </span>
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-[#EF4444] rounded-full border-2 border-white"></span>
                 )}
               </button>
 
@@ -348,33 +335,27 @@ export default function Header() {
 
             <button
               onClick={toggleDarkMode}
-              className="relative p-2.5 text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group overflow-hidden"
+              className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[rgba(45,80,22,0.08)] text-[#4A4A4A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-200"
               title="Toggle theme"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#FFA500] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              <div className="relative z-10">
-                {isDarkMode ? (
-                  <Sun className="w-5 h-5 text-[#FFD700] transform group-hover:rotate-180 group-hover:scale-110 transition-all duration-500" />
-                ) : (
-                  <Moon className="w-5 h-5 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500" />
-                )}
-              </div>
+              {isDarkMode ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
 
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-3 px-3 py-2 hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group"
+                className="flex items-center gap-3 px-2 py-2 rounded-[10px] hover:bg-[rgba(45,80,22,0.05)] transition-all duration-200"
               >
-                <div className="relative w-10 h-10 rounded-full flex items-center justify-center">
-                  <div className="absolute inset-[-3px] rounded-full bg-gradient-to-r from-[#FFD700] via-[#10B981] to-[#A78BFA] animate-[spin_3s_linear_infinite]"></div>
-                  <div className="relative w-full h-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-[#0A1F0A]" />
-                  </div>
+                <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#2D5016] to-[#4A7C3B] flex items-center justify-center text-white font-semibold text-sm">
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-bold text-[#F5F1E8]">{user?.name}</p>
-                  <p className="text-xs text-[#86EFAC] capitalize font-medium">{user?.role}</p>
+                  <p className="text-sm font-semibold text-[#1A1A1A]">{user?.name}</p>
+                  <p className="text-xs text-[#757575] capitalize">{user?.role}</p>
                 </div>
               </button>
 
