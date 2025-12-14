@@ -10,8 +10,15 @@ export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFinanceMenu, setShowFinanceMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const notificationCount = 3;
+
+  const notifications = [
+    { id: 1, title: 'New expense pending approval', message: 'Marketing expense of ₹5,000', time: '5 min ago', unread: true },
+    { id: 2, title: 'Batch B-2024-001 ready', message: 'Quality testing completed', time: '1 hour ago', unread: true },
+    { id: 3, title: 'License expiring soon', message: 'FSSAI license expires in 30 days', time: '2 hours ago', unread: true },
+  ];
+  const notificationCount = notifications.filter(n => n.unread).length;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('organitto-theme');
@@ -143,14 +150,82 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <button className="relative p-2.5 text-primary hover:bg-primary/5 rounded-button transition-all duration-300 group">
-              <Bell className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" />
-              {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full flex items-center justify-center shadow-glow animate-pulse">
-                  {notificationCount}
-                </span>
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2.5 text-primary hover:bg-primary/5 rounded-button transition-all duration-300 group"
+              >
+                <Bell className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" />
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full flex items-center justify-center shadow-glow animate-pulse">
+                    {notificationCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowNotifications(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-96 glass-card border border-white/20 overflow-hidden z-20 animate-slide-down">
+                    <div className="p-4 bg-gradient-mesh border-b border-primary/10">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-primary text-lg">Notifications</h3>
+                        {notificationCount > 0 && (
+                          <span className="px-2.5 py-1 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full">
+                            {notificationCount} new
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`p-4 border-b border-primary/5 hover:bg-primary/5 transition-colors cursor-pointer ${
+                              notification.unread ? 'bg-gold/5' : ''
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                                notification.unread ? 'bg-gold' : 'bg-gray-300'
+                              }`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-primary text-sm">
+                                  {notification.title}
+                                </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  {notification.time}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-8 text-center">
+                          <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                          <p className="text-gray-500 font-medium">No notifications</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3 bg-gray-50 border-t border-primary/10">
+                      <button
+                        onClick={() => setShowNotifications(false)}
+                        className="w-full text-center text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
+                      >
+                        View All Notifications
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
-            </button>
+            </div>
 
             <button
               onClick={toggleDarkMode}
