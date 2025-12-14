@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Leaf, Receipt, TrendingUp, Scale } from 'lucide-react';
+import { Leaf, Receipt, TrendingUp, Scale, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
 import Header from '../components/Header';
@@ -8,6 +8,8 @@ import StatsCard from '../components/StatsCard';
 import InvestmentExpenseChart from '../components/InvestmentExpenseChart';
 import ExpenseCategoryChart from '../components/ExpenseCategoryChart';
 import ActivityFeed from '../components/ActivityFeed';
+import { FloatingLeaves } from '../components/ui/FloatingLeaves';
+import { GlassCard } from '../components/ui/GlassCard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -97,7 +99,9 @@ export default function Dashboard() {
   const netBalanceColor = netBalance >= 0 ? 'text-sage' : 'text-soft-red';
 
   return (
-    <div className="min-h-screen bg-cream relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
+      <FloatingLeaves />
+
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -109,12 +113,20 @@ export default function Dashboard() {
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-primary mb-2">
-              Namaste, {user?.name || 'User'}
-            </h2>
-            <p className="text-dark-brown/70 text-lg">{currentDate}</p>
-          </div>
+          <GlassCard className="mb-8 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="p-4 bg-gradient-gold rounded-button">
+                <Sparkles className="w-8 h-8 text-primary-dark" />
+              </div>
+              <div>
+                <h2 className="font-heading text-4xl md:text-5xl font-bold text-primary mb-1">
+                  Namaste, {user?.name || 'User'}
+                </h2>
+                <p className="text-dark-brown/70 text-lg">{currentDate}</p>
+              </div>
+            </div>
+          </GlassCard>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatsCard

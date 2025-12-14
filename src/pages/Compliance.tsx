@@ -5,6 +5,9 @@ import Header from '../components/Header';
 import AddLicenseModal from '../components/AddLicenseModal';
 import { supabase } from '../lib/supabase';
 import { differenceInDays, format } from 'date-fns';
+import { FloatingLeaves } from '../components/ui/FloatingLeaves';
+import { GlassCard } from '../components/ui/GlassCard';
+import { PremiumButton } from '../components/ui';
 
 const LICENSE_TYPES = {
   fssai: { label: 'FSSAI License', icon: '🍴', color: 'from-blue-500 to-blue-600' },
@@ -94,98 +97,122 @@ export default function Compliance() {
   const licenseTypeInfo = (type: string) => LICENSE_TYPES[type as keyof typeof LICENSE_TYPES] || LICENSE_TYPES.other;
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
+      <FloatingLeaves />
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-heading text-4xl font-bold text-primary mb-2">
-              Compliance & Certifications
-            </h1>
-            <div className="flex items-center gap-4">
-              <p className="text-dark-brown/70">Manage licenses, certifications and inspections</p>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-dark-brown/60">Overall Status:</span>
-                <span className={`font-bold text-lg ${getComplianceColor()}`}>
-                  {getComplianceStatus().icon} {getComplianceStatus().label} ({stats.complianceScore}%)
-                </span>
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        <GlassCard className="mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div>
+              <h1 className="font-heading text-4xl md:text-5xl font-bold text-gradient mb-2">
+                Compliance & Certifications
+              </h1>
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                <p className="text-primary/70 text-lg font-medium">Manage licenses and certifications</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-primary/60 font-medium">Status:</span>
+                  <span className={`font-bold text-lg ${getComplianceColor()}`}>
+                    {getComplianceStatus().icon} {getComplianceStatus().label} ({stats.complianceScore}%)
+                  </span>
+                </div>
               </div>
             </div>
+            <PremiumButton
+              onClick={() => setShowAddModal(true)}
+              variant="primary"
+              size="lg"
+              className="hidden md:flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add License
+            </PremiumButton>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-secondary to-accent text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
-          >
-            <Plus className="w-5 h-5" />
-            Add License/Certificate
-          </button>
-        </div>
+        </GlassCard>
+
+        <PremiumButton
+          onClick={() => setShowAddModal(true)}
+          variant="primary"
+          size="lg"
+          className="md:hidden w-full mb-6 flex items-center justify-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          Add License/Certificate
+        </PremiumButton>
 
         {stats.expiringSoon > 0 && (
-          <div className="bg-accent/10 border-2 border-accent/20 rounded-xl p-4 mb-6">
+          <GlassCard className="bg-accent/10 border-2 border-accent/20 mb-6">
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-6 h-6 text-accent flex-shrink-0" />
               <div className="flex-1">
-                <p className="font-semibold text-dark-brown">
+                <p className="font-bold text-primary">
                   {stats.expiringSoon} license{stats.expiringSoon !== 1 ? 's' : ''} expiring in next 90 days - Review required
                 </p>
-                <p className="text-sm text-dark-brown/70 mt-1">
+                <p className="text-sm text-primary/70 mt-1 font-medium">
                   Initiate renewal process to maintain compliance
                 </p>
               </div>
             </div>
-          </div>
+          </GlassCard>
         )}
 
         {stats.expired > 0 && (
-          <div className="bg-soft-red/10 border-2 border-soft-red/20 rounded-xl p-4 mb-6">
+          <GlassCard className="bg-soft-red/10 border-2 border-soft-red/20 mb-6">
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-6 h-6 text-soft-red flex-shrink-0" />
               <div className="flex-1">
-                <p className="font-semibold text-soft-red">
+                <p className="font-bold text-soft-red">
                   {stats.expired} license{stats.expired !== 1 ? 's have' : ' has'} expired - Immediate action required
                 </p>
-                <p className="text-sm text-dark-brown/70 mt-1">
+                <p className="text-sm text-primary/70 mt-1 font-medium">
                   Operating without valid licenses may result in penalties and business disruption
                 </p>
               </div>
             </div>
-          </div>
+          </GlassCard>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow-soft p-6">
+          <GlassCard className="hover:shadow-glow transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
-              <Shield className="w-8 h-8 text-primary" />
+              <div className="p-3 bg-primary/20 rounded-button">
+                <Shield className="w-6 h-6 text-primary" />
+              </div>
               <span className="text-3xl font-bold text-primary">{stats.total}</span>
             </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Total Licenses</p>
-          </div>
+            <p className="text-sm font-bold text-primary/70">Total Licenses</p>
+          </GlassCard>
 
-          <div className="bg-white rounded-xl shadow-soft p-6">
+          <GlassCard className="hover:shadow-glow transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
-              <CheckCircle className="w-8 h-8 text-sage" />
+              <div className="p-3 bg-sage/20 rounded-button">
+                <CheckCircle className="w-6 h-6 text-sage" />
+              </div>
               <span className="text-3xl font-bold text-sage">{stats.active}</span>
             </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Active & Valid</p>
-          </div>
+            <p className="text-sm font-bold text-primary/70">Active & Valid</p>
+          </GlassCard>
 
-          <div className="bg-white rounded-xl shadow-soft p-6">
+          <GlassCard className="hover:shadow-glow transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
-              <Clock className="w-8 h-8 text-accent" />
+              <div className="p-3 bg-accent/20 rounded-button">
+                <Clock className="w-6 h-6 text-accent" />
+              </div>
               <span className="text-3xl font-bold text-accent">{stats.expiringSoon}</span>
             </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Renewal Due Soon</p>
-          </div>
+            <p className="text-sm font-bold text-primary/70">Renewal Due Soon</p>
+          </GlassCard>
 
-          <div className="bg-white rounded-xl shadow-soft p-6">
+          <GlassCard className="hover:shadow-glow transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
-              <AlertTriangle className="w-8 h-8 text-soft-red" />
+              <div className="p-3 bg-soft-red/20 rounded-button">
+                <AlertTriangle className="w-6 h-6 text-soft-red" />
+              </div>
               <span className="text-3xl font-bold text-soft-red">{stats.expired}</span>
             </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Expired</p>
-          </div>
+            <p className="text-sm font-bold text-primary/70">Expired</p>
+          </GlassCard>
         </div>
 
         {licenses.length > 0 ? (
@@ -202,8 +229,9 @@ export default function Compliance() {
                 <Link
                   key={license.id}
                   to={`/compliance/${license.id}`}
-                  className="bg-white rounded-xl shadow-soft hover:shadow-soft-lg transition-all overflow-hidden"
+                  className="block"
                 >
+                  <GlassCard className="hover:shadow-glow transition-all duration-300 overflow-hidden p-0">
                   <div className={`h-2 bg-gradient-to-r ${typeInfo.color}`} />
 
                   <div className="p-6">
@@ -279,26 +307,28 @@ export default function Compliance() {
                       </div>
                     </div>
                   </div>
+                  </GlassCard>
                 </Link>
               );
             })}
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-soft p-12 text-center">
-            <FileText className="w-16 h-16 text-dark-brown/20 mx-auto mb-4" />
-            <h3 className="font-heading text-xl font-bold text-dark-brown/60 mb-2">
+          <GlassCard className="p-16 text-center">
+            <FileText className="w-20 h-20 text-primary/20 mx-auto mb-6" />
+            <h3 className="font-heading text-2xl font-bold text-primary mb-3">
               No licenses recorded yet
             </h3>
-            <p className="text-dark-brown/40 mb-6">
+            <p className="text-primary/60 mb-6 text-lg font-medium">
               Add your business licenses and certifications to track compliance
             </p>
-            <button
+            <PremiumButton
               onClick={() => setShowAddModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+              variant="primary"
+              size="lg"
             >
               Add First License
-            </button>
-          </div>
+            </PremiumButton>
+          </GlassCard>
         )}
       </div>
 

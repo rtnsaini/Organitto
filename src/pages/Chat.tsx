@@ -7,6 +7,8 @@ import RoomInfo from '../components/chat/RoomInfo';
 import CreateRoomModal from '../components/chat/CreateRoomModal';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { FloatingLeaves } from '../components/ui/FloatingLeaves';
+import { PremiumButton } from '../components/ui';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -65,17 +67,18 @@ export default function Chat() {
   const selectedRoom = rooms.find(r => r.id === selectedRoomId);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
+      <FloatingLeaves />
       <Header />
 
-      <div className="h-[calc(100vh-73px)] flex">
-        <div className="w-80 bg-white border-r-2 border-dark-brown/5 flex flex-col">
-          <div className="p-4 border-b-2 border-dark-brown/5">
+      <div className="relative z-10 h-[calc(100vh-73px)] flex">
+        <div className="w-80 glass-card border-r-2 border-primary/10 flex flex-col">
+          <div className="p-4 border-b-2 border-primary/10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading text-2xl font-bold text-primary">Team Chat</h2>
+              <h2 className="font-heading text-2xl font-bold text-gradient">Team Chat</h2>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+                className="p-2 bg-gradient-primary text-white rounded-button hover:shadow-glow transition-all"
               >
                 <Plus className="w-5 h-5" />
               </button>
@@ -90,7 +93,7 @@ export default function Chat() {
           />
         </div>
 
-        <div className="flex-1 flex flex-col bg-white">
+        <div className="flex-1 flex flex-col glass-card">
           {selectedRoom ? (
             <ChatMessageArea
               room={selectedRoom}
@@ -101,10 +104,10 @@ export default function Chat() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-6xl mb-4">💬</div>
-                <h3 className="font-heading text-2xl font-bold text-dark-brown/60 mb-2">
+                <h3 className="font-heading text-3xl font-bold text-primary mb-3">
                   Select a room to start chatting
                 </h3>
-                <p className="text-dark-brown/40">
+                <p className="text-primary/60 text-lg font-medium">
                   Choose a room from the sidebar or create a new one
                 </p>
               </div>
@@ -113,7 +116,7 @@ export default function Chat() {
         </div>
 
         {showRoomInfo && selectedRoom && (
-          <div className="w-80 bg-white border-l-2 border-dark-brown/5">
+          <div className="w-80 glass-card border-l-2 border-primary/10">
             <RoomInfo room={selectedRoom} onClose={() => setShowRoomInfo(false)} />
           </div>
         )}

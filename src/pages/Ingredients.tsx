@@ -5,6 +5,9 @@ import Header from '../components/Header';
 import AddIngredientStockModal from '../components/AddIngredientStockModal';
 import { supabase } from '../lib/supabase';
 import { differenceInDays, format } from 'date-fns';
+import { FloatingLeaves } from '../components/ui/FloatingLeaves';
+import { GlassCard } from '../components/ui/GlassCard';
+import { PremiumButton } from '../components/ui';
 
 export default function Ingredients() {
   const [ingredients, setIngredients] = useState<any[]>([]);
@@ -143,122 +146,148 @@ export default function Ingredients() {
   };
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-soft-beige to-cream relative overflow-hidden">
+      <FloatingLeaves />
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-heading text-4xl font-bold text-primary mb-2">
-              Ingredient Inventory & Expiry Management
-            </h1>
-            <p className="text-dark-brown/70">Track stock levels, expiry dates, and reorder alerts</p>
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        <GlassCard className="mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div>
+              <h1 className="font-heading text-4xl md:text-5xl font-bold text-gradient mb-2">
+                Ingredient Inventory
+              </h1>
+              <p className="text-primary/70 text-lg font-medium">Track stock levels, expiry dates, and reorder alerts</p>
+            </div>
+            <PremiumButton
+              onClick={() => setShowAddModal(true)}
+              variant="primary"
+              size="lg"
+              className="hidden md:flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add Stock
+            </PremiumButton>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-secondary to-accent text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
-          >
-            <Plus className="w-5 h-5" />
-            Add Ingredient Stock
-          </button>
-        </div>
+        </GlassCard>
+
+        <PremiumButton
+          onClick={() => setShowAddModal(true)}
+          variant="primary"
+          size="lg"
+          className="md:hidden w-full mb-6 flex items-center justify-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          Add Ingredient Stock
+        </PremiumButton>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
           <button
             onClick={() => setStatusFilter('expired')}
-            className={`bg-white rounded-xl shadow-soft p-4 hover:shadow-soft-lg transition-all text-left ${
-              statusFilter === 'expired' ? 'ring-2 ring-soft-red' : ''
-            }`}
+            className="text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">🔴</span>
-              <span className={`text-3xl font-bold ${alerts.expired > 0 ? 'text-soft-red' : 'text-dark-brown/20'}`}>
-                {alerts.expired}
-              </span>
-            </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Expired</p>
+            <GlassCard className={`hover:shadow-glow transition-all duration-300 ${
+              statusFilter === 'expired' ? 'ring-2 ring-soft-red shadow-glow' : ''
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">🔴</span>
+                <span className={`text-3xl font-bold ${alerts.expired > 0 ? 'text-soft-red' : 'text-primary/20'}`}>
+                  {alerts.expired}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-primary/70">Expired</p>
+            </GlassCard>
           </button>
 
           <button
             onClick={() => setStatusFilter('expiring_soon')}
-            className={`bg-white rounded-xl shadow-soft p-4 hover:shadow-soft-lg transition-all text-left ${
-              statusFilter === 'expiring_soon' ? 'ring-2 ring-soft-red' : ''
-            }`}
+            className="text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">🟠</span>
-              <span className={`text-3xl font-bold ${alerts.expiring15d > 0 ? 'text-soft-red' : 'text-dark-brown/20'}`}>
-                {alerts.expiring15d}
-              </span>
-            </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Expiring {'<'}15 days</p>
+            <GlassCard className={`hover:shadow-glow transition-all duration-300 ${
+              statusFilter === 'expiring_soon' ? 'ring-2 ring-soft-red shadow-glow' : ''
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">🟠</span>
+                <span className={`text-3xl font-bold ${alerts.expiring15d > 0 ? 'text-soft-red' : 'text-primary/20'}`}>
+                  {alerts.expiring15d}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-primary/70">Expiring {'<'}15 days</p>
+            </GlassCard>
           </button>
 
           <button
             onClick={() => setStatusFilter('expiring_30d')}
-            className={`bg-white rounded-xl shadow-soft p-4 hover:shadow-soft-lg transition-all text-left ${
-              statusFilter === 'expiring_30d' ? 'ring-2 ring-amber-500' : ''
-            }`}
+            className="text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">🟡</span>
-              <span className={`text-3xl font-bold ${alerts.expiring30d > 0 ? 'text-amber-500' : 'text-dark-brown/20'}`}>
-                {alerts.expiring30d}
-              </span>
-            </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Expiring 15-30 days</p>
+            <GlassCard className={`hover:shadow-glow transition-all duration-300 ${
+              statusFilter === 'expiring_30d' ? 'ring-2 ring-amber-500 shadow-glow' : ''
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">🟡</span>
+                <span className={`text-3xl font-bold ${alerts.expiring30d > 0 ? 'text-amber-500' : 'text-primary/20'}`}>
+                  {alerts.expiring30d}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-primary/70">Expiring 15-30 days</p>
+            </GlassCard>
           </button>
 
           <button
             onClick={() => setStatusFilter('low_stock')}
-            className={`bg-white rounded-xl shadow-soft p-4 hover:shadow-soft-lg transition-all text-left ${
-              statusFilter === 'low_stock' ? 'ring-2 ring-blue-500' : ''
-            }`}
+            className="text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">🔵</span>
-              <span className={`text-3xl font-bold ${alerts.lowStock > 0 ? 'text-blue-500' : 'text-dark-brown/20'}`}>
-                {alerts.lowStock}
-              </span>
-            </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Low Stock</p>
+            <GlassCard className={`hover:shadow-glow transition-all duration-300 ${
+              statusFilter === 'low_stock' ? 'ring-2 ring-blue-500 shadow-glow' : ''
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">🔵</span>
+                <span className={`text-3xl font-bold ${alerts.lowStock > 0 ? 'text-blue-500' : 'text-primary/20'}`}>
+                  {alerts.lowStock}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-primary/70">Low Stock</p>
+            </GlassCard>
           </button>
 
           <button
             onClick={() => setStatusFilter(alerts.reorderNeeded > 0 ? 'low_stock' : 'all')}
-            className={`bg-white rounded-xl shadow-soft p-4 hover:shadow-soft-lg transition-all text-left ${
-              alerts.reorderNeeded > 0 ? 'ring-2 ring-sage' : ''
-            }`}
+            className="text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">🟢</span>
-              <span className={`text-3xl font-bold ${alerts.reorderNeeded > 0 ? 'text-sage' : 'text-dark-brown/20'}`}>
-                {alerts.reorderNeeded}
-              </span>
-            </div>
-            <p className="text-sm font-semibold text-dark-brown/70">Reorder Needed</p>
+            <GlassCard className={`hover:shadow-glow transition-all duration-300 ${
+              alerts.reorderNeeded > 0 ? 'ring-2 ring-sage shadow-glow' : ''
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">🟢</span>
+                <span className={`text-3xl font-bold ${alerts.reorderNeeded > 0 ? 'text-sage' : 'text-primary/20'}`}>
+                  {alerts.reorderNeeded}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-primary/70">Reorder Needed</p>
+            </GlassCard>
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-soft p-4 mb-6">
+        <GlassCard className="mb-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setStatusFilter('all')}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`px-4 py-2 rounded-button font-bold transition-all ${
                   statusFilter === 'all'
-                    ? 'bg-primary text-white shadow-soft'
-                    : 'bg-dark-brown/5 text-dark-brown hover:bg-dark-brown/10'
+                    ? 'bg-gradient-primary text-white shadow-glow'
+                    : 'bg-primary/5 text-primary hover:bg-primary/10'
                 }`}
               >
                 All ({ingredients.length})
               </button>
               <button
                 onClick={() => setStatusFilter('good_stock')}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`px-4 py-2 rounded-button font-bold transition-all ${
                   statusFilter === 'good_stock'
-                    ? 'bg-primary text-white shadow-soft'
-                    : 'bg-dark-brown/5 text-dark-brown hover:bg-dark-brown/10'
+                    ? 'bg-gradient-primary text-white shadow-glow'
+                    : 'bg-primary/5 text-primary hover:bg-primary/10'
                 }`}
               >
                 Good Stock
@@ -267,29 +296,29 @@ export default function Ingredients() {
 
             <div className="flex items-center gap-3 w-full lg:w-auto">
               <div className="relative flex-1 lg:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-brown/40" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40 z-10" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search ingredients..."
-                  className="w-full pl-10 pr-4 py-2 border-2 border-dark-brown/10 rounded-lg focus:border-accent focus:outline-none"
+                  className="input-float w-full pl-12"
                 />
               </div>
 
-              <div className="flex items-center gap-2 bg-dark-brown/5 rounded-lg p-1">
+              <div className="flex items-center gap-2 bg-primary/5 rounded-button p-1">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded ${
-                    viewMode === 'list' ? 'bg-white shadow-soft' : ''
+                  className={`p-2 rounded-button transition-all ${
+                    viewMode === 'list' ? 'bg-gradient-primary text-white shadow-glow' : 'text-primary'
                   }`}
                 >
                   <List className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded ${
-                    viewMode === 'grid' ? 'bg-white shadow-soft' : ''
+                  className={`p-2 rounded-button transition-all ${
+                    viewMode === 'grid' ? 'bg-gradient-primary text-white shadow-glow' : 'text-primary'
                   }`}
                 >
                   <Grid className="w-5 h-5" />
@@ -297,10 +326,10 @@ export default function Ingredients() {
               </div>
             </div>
           </div>
-        </div>
+        </GlassCard>
 
         {viewMode === 'list' ? (
-          <div className="bg-white rounded-xl shadow-soft overflow-hidden">
+          <GlassCard className="overflow-hidden p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-cream border-b-2 border-dark-brown/5">
@@ -411,17 +440,17 @@ export default function Ingredients() {
             </div>
 
             {filteredIngredients.length === 0 && (
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-dark-brown/20 mx-auto mb-4" />
-                <h3 className="font-heading text-xl font-bold text-dark-brown/60 mb-2">
+              <div className="text-center py-12 px-6">
+                <Package className="w-20 h-20 text-primary/20 mx-auto mb-6" />
+                <h3 className="font-heading text-2xl font-bold text-primary mb-3">
                   No ingredients found
                 </h3>
-                <p className="text-dark-brown/40 mb-4">
+                <p className="text-primary/60 mb-4 text-lg font-medium">
                   {searchQuery ? 'Try adjusting your search' : 'Add your first ingredient to start tracking'}
                 </p>
               </div>
             )}
-          </div>
+          </GlassCard>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredIngredients.map(ingredient => {
@@ -434,9 +463,10 @@ export default function Ingredients() {
                 <Link
                   key={ingredient.ingredient_id}
                   to={`/ingredients/${ingredient.ingredient_id}`}
-                  className="bg-white rounded-xl shadow-soft hover:shadow-soft-lg transition-all overflow-hidden"
+                  className="block"
                 >
-                  <div className="p-6">
+                  <GlassCard className="hover:shadow-glow transition-all duration-300 h-full">
+                  <div className="relative z-10">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         {ingredient.image_url ? (
@@ -489,6 +519,7 @@ export default function Ingredients() {
                       </div>
                     </div>
                   </div>
+                  </GlassCard>
                 </Link>
               );
             })}

@@ -1,4 +1,5 @@
 import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
+import { GlassCard } from './ui/GlassCard';
 
 interface StatsCardProps {
   title: string;
@@ -25,7 +26,9 @@ export default function StatsCard({
   const isPositive = trend && trend.value >= 0;
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft p-6 hover:shadow-soft-lg transition-all duration-300 hover:scale-[1.02]">
+    <GlassCard className="hover:shadow-glow transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+      <div className="relative z-10">
       <div className="flex items-start justify-between mb-4">
         <div className={`w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center`}>
           <Icon className={`w-6 h-6 ${iconColor}`} />
@@ -57,6 +60,7 @@ export default function StatsCard({
       {trend && (
         <p className="text-xs text-dark-brown/50">{trend.label}</p>
       )}
-    </div>
+      </div>
+    </GlassCard>
   );
 }
