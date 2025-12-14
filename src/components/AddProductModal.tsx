@@ -194,17 +194,17 @@ export default function AddProductModal({ isOpen, onClose, onSubmit, users }: Ad
             </label>
             <div className="flex gap-4">
               {[
-                { value: 'high', label: 'High', color: 'bg-soft-red' },
-                { value: 'medium', label: 'Medium', color: 'bg-accent' },
-                { value: 'low', label: 'Low', color: 'bg-sage' },
+                { value: 'high', label: 'High', bgColor: 'bg-red-500', hoverColor: 'hover:bg-red-600', borderColor: 'border-red-500' },
+                { value: 'medium', label: 'Medium', bgColor: 'bg-orange-500', hoverColor: 'hover:bg-orange-600', borderColor: 'border-orange-500' },
+                { value: 'low', label: 'Low', bgColor: 'bg-green-500', hoverColor: 'hover:bg-green-600', borderColor: 'border-green-500' },
               ].map(priority => (
                 <label
                   key={priority.value}
-                  className={`flex-1 cursor-pointer ${
+                  className={`flex-1 cursor-pointer px-4 py-3 rounded-xl font-semibold text-center transition-all duration-300 border-2 ${
                     formData.priority === priority.value
-                      ? `${priority.color} text-white`
-                      : 'bg-dark-brown/5 text-dark-brown'
-                  } px-4 py-3 rounded-xl font-semibold text-center transition-all duration-300 hover:scale-105`}
+                      ? `${priority.bgColor} ${priority.borderColor} text-white shadow-md`
+                      : `bg-white ${priority.borderColor} border-opacity-30 text-dark-brown hover:border-opacity-100 hover:shadow-sm`
+                  }`}
                 >
                   <input
                     type="radio"
@@ -288,14 +288,14 @@ export default function AddProductModal({ isOpen, onClose, onSubmit, users }: Ad
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-dark-brown/5 text-dark-brown font-semibold rounded-xl hover:bg-dark-brown/10 transition-colors"
+              className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors border-2 border-gray-300"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-sage to-primary text-white font-semibold rounded-xl hover:shadow-soft-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
             >
               {loading ? 'Creating...' : 'Create Product'}
             </button>
