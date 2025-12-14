@@ -3,6 +3,7 @@ import { Plus, LayoutGrid, List, Filter, Package, Rocket, CheckCircle, AlertTria
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
 import AddProductModal from '../components/AddProductModal';
+import EditProductModal from '../components/EditProductModal';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -22,6 +23,8 @@ export default function ProductPipeline() {
   const { user } = useAuth();
   const [view, setView] = useState<'board' | 'list'>('board');
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -154,7 +157,33 @@ export default function ProductPipeline() {
   };
 
   const handleEdit = (product: any) => {
-    console.log('Edit product:', product);
+    setSelectedProduct(product);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateProduct = async (productId: string, productData: any) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({
+          ...productData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', productId);
+
+      if (error) throw error;
+
+      await supabase.from('activity_log').insert({
+        user_id: user?.id,
+        activity_type: 'product_updated',
+        description: `${user?.name} updated product: ${productData.name}`,
+      });
+
+      await fetchData();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
   };
 
   const filteredProducts = products.filter(p => {
@@ -440,6 +469,19 @@ export default function ProductPipeline() {
         onSubmit={handleCreateProduct}
         users={users}
       />
+
+      {selectedProduct && (
+        <EditProductModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedProduct(null);
+          }}
+          onSubmit={handleUpdateProduct}
+          product={selectedProduct}
+          users={users}
+        />
+      )}
     </div>
   );
 }

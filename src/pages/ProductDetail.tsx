@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, ArrowRight, Share2, Archive, FileText, Leaf, TestTube, Package as PackageIcon, CheckSquare, MessageSquare, FolderOpen } from 'lucide-react';
 import Header from '../components/Header';
+import EditProductModal from '../components/EditProductModal';
 import OverviewTab from '../components/product-detail/OverviewTab';
 import IngredientsTab from '../components/product-detail/IngredientsTab';
 import TestingTab from '../components/product-detail/TestingTab';
@@ -40,30 +41,43 @@ export default function ProductDetail() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [product, setProduct] = useState<any>(null);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (id) {
-      fetchProduct();
+      fetchData();
     }
   }, [id]);
 
-  const fetchProduct = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const [productRes, usersRes] = await Promise.all([
+        supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single(),
+        supabase
+          .from('users')
+          .select('id, name, email')
+          .order('name'),
+      ]);
 
-      if (error) throw error;
-      setProduct(data);
+      if (productRes.error) throw productRes.error;
+      if (usersRes.error) throw usersRes.error;
+
+      setProduct(productRes.data);
+      setUsers(usersRes.data || []);
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  const fetchProduct = fetchData;
 
   const handleMoveNext = async () => {
     if (!product) return;
@@ -107,6 +121,31 @@ export default function ProductDetail() {
       await fetchProduct();
     } catch (error) {
       console.error('Error moving product:', error);
+    }
+  };
+
+  const handleUpdateProduct = async (productId: string, productData: any) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({
+          ...productData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', productId);
+
+      if (error) throw error;
+
+      await supabase.from('activity_log').insert({
+        user_id: user?.id,
+        activity_type: 'product_updated',
+        description: `${user?.name} updated product: ${productData.name}`,
+      });
+
+      await fetchProduct();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
     }
   };
 
@@ -194,7 +233,7 @@ export default function ProductDetail() {
 
             <div className="flex flex-wrap gap-3">
               <button
-                onClick={() => navigate(`/products/${id}/edit`)}
+                onClick={() => setShowEditModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-dark-brown/5 hover:bg-dark-brown/10 text-dark-brown rounded-xl font-semibold transition-colors"
               >
                 <Edit className="w-5 h-5" />
@@ -256,6 +295,16 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {product && (
+        <EditProductModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleUpdateProduct}
+          product={product}
+          users={users}
+        />
+      )}
     </div>
   );
 }
