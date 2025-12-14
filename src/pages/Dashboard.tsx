@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Leaf, Receipt, TrendingUp, Scale, Sparkles } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
-import Header from '../components/Header';
 import StatsCard from '../components/StatsCard';
 import InvestmentExpenseChart from '../components/InvestmentExpenseChart';
 import ExpenseCategoryChart from '../components/ExpenseCategoryChart';
 import ActivityFeed from '../components/ActivityFeed';
-import { FloatingLeaves } from '../components/ui/FloatingLeaves';
-import { GlassCard } from '../components/ui/GlassCard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -99,14 +96,9 @@ export default function Dashboard() {
   const netBalanceColor = netBalance >= 0 ? 'text-sage' : 'text-soft-red';
 
   return (
-    <div className="min-h-screen bg-[#F5F7F5] relative overflow-hidden">
-      <FloatingLeaves />
-
-      <Header />
-
-      <div className="relative z-10 container mx-auto px-6 py-6 page-transition">
-        <div className="max-w-7xl mx-auto">
-          <div className="dashboard-hero">
+    <div className="page-transition">
+      <div className="max-w-7xl mx-auto">
+        <div className="dashboard-hero">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <h1 className="greeting">
@@ -178,8 +170,7 @@ export default function Dashboard() {
             <ExpenseCategoryChart data={categoryData} />
           </div>
 
-          <ActivityFeed activities={activities} />
-        </div>
+        <ActivityFeed activities={activities} />
       </div>
     </div>
   );

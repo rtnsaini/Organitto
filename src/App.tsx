@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AppLayout from './components/AppLayout';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import OfflineBanner from './components/OfflineBanner';
 import UpdateNotification from './components/UpdateNotification';
@@ -47,182 +48,42 @@ function AppContent() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/finance"
-            element={
-              <ProtectedRoute>
-                <Finance />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expenses/add"
-            element={
-              <ProtectedRoute>
-                <AddExpense />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expenses/edit/:id"
-            element={
-              <ProtectedRoute>
-                <EditExpense />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expenses"
-            element={
-              <ProtectedRoute>
-                <ExpenseList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expenses/reports"
-            element={
-              <ProtectedRoute>
-                <ExpenseReports />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/investments"
-            element={
-              <ProtectedRoute>
-                <Investments />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/products"
-            element={
-              <ProtectedRoute>
-                <ProductPipeline />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/products/:id"
-            element={
-              <ProtectedRoute>
-                <ProductDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/calculator"
-            element={
-              <ProtectedRoute>
-                <CostCalculator />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/vendors"
-            element={
-              <ProtectedRoute>
-                <Vendors />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/vendors/:id"
-            element={
-              <ProtectedRoute>
-                <VendorDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/batches"
-            element={
-              <ProtectedRoute>
-                <Batches />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/batches/:id"
-            element={
-              <ProtectedRoute>
-                <BatchDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ingredients"
-            element={
-              <ProtectedRoute>
-                <Ingredients />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ingredients/:id"
-            element={
-              <ProtectedRoute>
-                <IngredientDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/compliance"
-            element={
-              <ProtectedRoute>
-                <Compliance />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/compliance/:id"
-            element={
-              <ProtectedRoute>
-                <LicenseDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <Chat />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/notifications"
-            element={
-              <ProtectedRoute>
-                <Notifications />
-              </ProtectedRoute>
-            }
-          />
+
+          <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/finance" element={<Finance />} />
+            <Route path="/expenses/add" element={<AddExpense />} />
+            <Route path="/expenses/edit/:id" element={<EditExpense />} />
+            <Route path="/expenses" element={<ExpenseList />} />
+            <Route path="/expenses/reports" element={<ExpenseReports />} />
+            <Route path="/investments" element={<Investments />} />
+            <Route path="/products" element={<ProductPipeline />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/calculator" element={<CostCalculator />} />
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendors/:id" element={<VendorDetail />} />
+            <Route path="/batches" element={<Batches />} />
+            <Route path="/batches/:id" element={<BatchDetail />} />
+            <Route path="/ingredients" element={<Ingredients />} />
+            <Route path="/ingredients/:id" element={<IngredientDetail />} />
+            <Route path="/compliance" element={<Compliance />} />
+            <Route path="/compliance/:id" element={<LicenseDetail />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
+          </Route>
+
           <Route
             path="/admin/user-approvals"
             element={
               <ProtectedRoute adminOnly>
-                <UserApprovals />
+                <AppLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<UserApprovals />} />
+          </Route>
+
           <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {shouldShowFAB && <FloatingActionButton />}
