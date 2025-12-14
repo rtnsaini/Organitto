@@ -193,15 +193,17 @@ export default function ApprovalModal({
             <button
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-6 py-3 border-2 border-dark-brown/20 text-dark-brown font-semibold rounded-xl hover:bg-dark-brown/5 transition-all duration-300 disabled:opacity-50"
+              className="flex-1 px-6 py-3 border-2 border-dark-brown/20 text-dark-brown font-bold rounded-xl hover:bg-dark-brown/5 transition-all duration-300 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirm}
               disabled={loading}
-              className={`flex-1 px-6 py-3 text-white font-semibold rounded-xl shadow-soft hover:shadow-soft-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
-                type === 'approve' ? 'bg-sage' : 'bg-soft-red'
+              className={`flex-1 px-6 py-3 text-white font-bold rounded-xl shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                type === 'approve'
+                  ? 'bg-gradient-to-r from-sage via-primary to-sage bg-[length:200%_100%] hover:bg-[position:100%_0]'
+                  : 'bg-gradient-to-r from-red-500 via-red-600 to-red-500 bg-[length:200%_100%] hover:bg-[position:100%_0]'
               }`}
             >
               {loading ? 'Processing...' : type === 'approve' ? 'Confirm Approval' : 'Confirm Rejection'}
