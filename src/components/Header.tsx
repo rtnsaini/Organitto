@@ -174,17 +174,22 @@ export default function Header() {
   const isFinanceActive = () => location.pathname.startsWith('/expenses') || location.pathname.startsWith('/investments') || location.pathname === '/finance';
 
   return (
-    <header className="sticky top-0 z-50 glass-card border-b border-white/20 shadow-glass">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-18">
+    <header className="sticky top-0 z-100 backdrop-blur-[20px] bg-[rgba(10,31,10,0.9)] border-b border-[rgba(255,215,0,0.1)] saturate-[180%]">
+      <div className="container mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between h-20">
           <Link to="/dashboard" className="flex items-center gap-3 group">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-gold blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#10B981] blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
               <img
                 src="/whatsapp_image_2025-10-29_at_11.28.27-removebg-preview.png"
                 alt="Organitto - The Organic Choice"
-                className="h-12 md:h-14 w-auto object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                className="h-12 md:h-16 w-auto object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_20px_rgba(255,215,0,0.3)]"
               />
+            </div>
+            <div className="hidden md:block">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#10B981] bg-clip-text text-transparent">
+                Organitto
+              </h1>
             </div>
           </Link>
 
@@ -198,10 +203,10 @@ export default function Header() {
                       <button
                         onMouseEnter={() => setShowFinanceMenu(true)}
                         onMouseLeave={() => setShowFinanceMenu(false)}
-                        className={`px-4 py-2.5 rounded-button font-semibold transition-all duration-300 flex items-center gap-2 group ${
+                        className={`px-4 py-2.5 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 group ${
                           isFinanceActive()
-                            ? 'bg-gradient-primary text-white shadow-colored scale-105'
-                            : 'text-primary hover:bg-gradient-primary/10 hover:shadow-soft hover:scale-105'
+                            ? 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#0A1F0A] shadow-[0_4px_12px_rgba(255,215,0,0.4)]'
+                            : 'text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] hover:text-[#FFD700]'
                         }`}
                       >
                         {Icon && <Icon className={`w-4 h-4 transition-transform duration-300 ${isFinanceActive() ? '' : 'group-hover:scale-110'}`} />}
@@ -233,10 +238,10 @@ export default function Header() {
                   ) : (
                     <Link
                       to={link.path}
-                      className={`px-4 py-2.5 rounded-button font-semibold transition-all duration-300 relative overflow-hidden group flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden group flex items-center gap-2 ${
                         isActive(link.path)
-                          ? 'bg-gradient-primary text-white shadow-colored scale-105'
-                          : 'text-primary hover:bg-gradient-primary/10 hover:shadow-soft hover:scale-105'
+                          ? 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#0A1F0A] shadow-[0_4px_12px_rgba(255,215,0,0.4)]'
+                          : 'text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] hover:text-[#FFD700]'
                       }`}
                     >
                       {Icon && (
@@ -264,11 +269,11 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2.5 text-primary hover:bg-primary/5 rounded-button transition-all duration-300 group"
+                className="relative p-2.5 text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group"
               >
                 <Bell className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" />
                 {notificationCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full flex items-center justify-center shadow-glow animate-pulse">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white text-xs font-bold rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(239,68,68,0.4)] animate-pulse">
                     {notificationCount}
                   </span>
                 )}
@@ -343,13 +348,13 @@ export default function Header() {
 
             <button
               onClick={toggleDarkMode}
-              className="relative p-2.5 text-primary hover:bg-primary/5 rounded-button transition-all duration-300 group overflow-hidden"
-              title="Toggle dark mode"
+              className="relative p-2.5 text-[#F5F1E8] hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group overflow-hidden"
+              title="Toggle theme"
             >
-              <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#FFA500] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               <div className="relative z-10">
                 {isDarkMode ? (
-                  <Sun className="w-5 h-5 transform group-hover:rotate-180 group-hover:scale-110 transition-all duration-500" />
+                  <Sun className="w-5 h-5 text-[#FFD700] transform group-hover:rotate-180 group-hover:scale-110 transition-all duration-500" />
                 ) : (
                   <Moon className="w-5 h-5 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500" />
                 )}
@@ -359,14 +364,17 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-3 px-3 py-2 hover:bg-primary/5 rounded-button transition-all duration-300 group"
+                className="flex items-center gap-3 px-3 py-2 hover:bg-[rgba(255,215,0,0.1)] rounded-xl transition-all duration-300 group"
               >
-                <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-colored ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
-                  <User className="w-5 h-5 text-white" />
+                <div className="relative w-10 h-10 rounded-full flex items-center justify-center">
+                  <div className="absolute inset-[-3px] rounded-full bg-gradient-to-r from-[#FFD700] via-[#10B981] to-[#A78BFA] animate-[spin_3s_linear_infinite]"></div>
+                  <div className="relative w-full h-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-[#0A1F0A]" />
+                  </div>
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-bold text-primary">{user?.name}</p>
-                  <p className="text-xs text-primary/60 capitalize font-medium">{user?.role}</p>
+                  <p className="text-sm font-bold text-[#F5F1E8]">{user?.name}</p>
+                  <p className="text-xs text-[#86EFAC] capitalize font-medium">{user?.role}</p>
                 </div>
               </button>
 

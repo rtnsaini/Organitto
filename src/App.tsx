@@ -5,6 +5,7 @@ import PWAInstallPrompt from './components/PWAInstallPrompt';
 import OfflineBanner from './components/OfflineBanner';
 import UpdateNotification from './components/UpdateNotification';
 import FloatingActionButton from './components/FloatingActionButton';
+import { FloatingLeaves } from './components/ui/FloatingLeaves';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -41,6 +42,7 @@ function AppContent() {
 
   return (
     <>
+      {!isPublicRoute && <FloatingLeaves />}
       <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
