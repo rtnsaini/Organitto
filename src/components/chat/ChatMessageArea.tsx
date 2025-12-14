@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Settings, Search, Users, ChevronDown } from 'lucide-react';
+import { Users, ChevronDown } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import MessageComposer from './MessageComposer';
@@ -8,11 +8,10 @@ import { format, isToday, isYesterday, isSameDay } from 'date-fns';
 
 interface ChatMessageAreaProps {
   room: any;
-  onToggleInfo: () => void;
-  showInfo: boolean;
+  teamMembers: any[];
 }
 
-export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMessageAreaProps) {
+export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,6 +168,21 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
     return !isSameDay(new Date(currentMsg.created_at), new Date(prevMsg.created_at));
   };
 
+  const getSenderName = (senderId: string) => {
+    const member = teamMembers.find(m => m.id === senderId);
+    if (senderId === user?.id) return 'You';
+    return member?.full_name || member?.email?.split('@')[0] || 'Unknown';
+  };
+
+  const getTypingUserNames = () => {
+    return typingUsers
+      .map(tu => {
+        const member = teamMembers.find(m => m.id === tu.user_id);
+        return member?.full_name || member?.email?.split('@')[0] || 'Someone';
+      })
+      .join(', ');
+  };
+
   return (
     <div className="flex-1 flex flex-col h-full">
       <div className="border-b-2 border-dark-brown/5 p-4 bg-white">
@@ -177,7 +191,7 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
             <div className="text-3xl">{room.icon}</div>
             <div className="flex-1 min-w-0">
               <h3 className="font-heading text-xl font-bold text-primary truncate">
-                {room.name.replace(room.icon, '').trim()}
+                {room.name}
               </h3>
               {room.description && (
                 <p className="text-sm text-dark-brown/60 truncate">{room.description}</p>
@@ -186,25 +200,11 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-dark-brown/5 rounded-lg transition-colors">
-              <Search className="w-5 h-5 text-dark-brown/60" />
-            </button>
-            <button
-              onClick={onToggleInfo}
-              className={`p-2 rounded-lg transition-colors ${
-                showInfo ? 'bg-primary/10 text-primary' : 'hover:bg-dark-brown/5 text-dark-brown/60'
-              }`}
-            >
-              <Settings className="w-5 h-5" />
-            </button>
+            <Users className="w-5 h-5 text-dark-brown/40" />
+            <span className="text-sm text-dark-brown/60 font-medium">
+              {teamMembers.length} partner{teamMembers.length !== 1 ? 's' : ''}
+            </span>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 mt-2">
-          <Users className="w-4 h-4 text-dark-brown/40" />
-          <span className="text-sm text-dark-brown/60">
-            {room.member_count} member{room.member_count !== 1 ? 's' : ''}
-          </span>
         </div>
       </div>
 
@@ -230,12 +230,34 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
                     <div className="flex-1 h-px bg-dark-brown/10"></div>
                   </div>
                 )}
-                <ChatMessage
-                  message={message}
-                  isOwnMessage={message.sender_id === user?.id}
-                  onDelete={() => fetchMessages()}
-                  onEdit={() => fetchMessages()}
-                />
+
+                <div className="flex items-start gap-3">
+                  {message.sender_id !== user?.id && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-sage flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                      {getSenderName(message.sender_id)[0]?.toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className={`flex-1 ${message.sender_id === user?.id ? 'ml-auto' : ''}`}>
+                    {message.sender_id !== user?.id && (
+                      <div className="text-sm font-semibold text-primary mb-1">
+                        {getSenderName(message.sender_id)}
+                      </div>
+                    )}
+                    <ChatMessage
+                      message={message}
+                      isOwnMessage={message.sender_id === user?.id}
+                      onDelete={() => fetchMessages()}
+                      onEdit={() => fetchMessages()}
+                    />
+                  </div>
+
+                  {message.sender_id === user?.id && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-sage flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                      {getSenderName(message.sender_id)[0]?.toUpperCase()}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
             <div ref={messagesEndRef} />
@@ -248,7 +270,7 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
                 No messages yet
               </h4>
               <p className="text-dark-brown/40">
-                Start the conversation!
+                Start the conversation with your team!
               </p>
             </div>
           </div>
@@ -262,7 +284,7 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
               <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
             </div>
             <span className="text-sm text-dark-brown/60">
-              {typingUsers.length === 1 ? 'Someone is' : `${typingUsers.length} people are`} typing...
+              {getTypingUserNames()} {typingUsers.length === 1 ? 'is' : 'are'} typing...
             </span>
           </div>
         )}
@@ -271,7 +293,7 @@ export default function ChatMessageArea({ room, onToggleInfo, showInfo }: ChatMe
       {showScrollButton && (
         <button
           onClick={scrollToBottom}
-          className="absolute bottom-24 right-8 p-3 bg-primary text-white rounded-full shadow-soft-lg hover:shadow-soft-xl transition-all"
+          className="absolute bottom-24 right-8 p-3 bg-primary text-white rounded-full shadow-soft-lg hover:shadow-soft-xl transition-all z-10"
         >
           <ChevronDown className="w-5 h-5" />
         </button>
