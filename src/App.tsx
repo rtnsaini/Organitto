@@ -29,6 +29,7 @@ import LicenseDetail from './pages/LicenseDetail';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Notifications from './pages/Notifications';
+import UserApprovals from './pages/UserApprovals';
 
 function AppContent() {
   const location = useLocation();
@@ -209,6 +210,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/user-approvals"
+            element={
+              <ProtectedRoute adminOnly>
+                <UserApprovals />
               </ProtectedRoute>
             }
           />

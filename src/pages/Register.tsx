@@ -18,6 +18,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isFirstUser, setIsFirstUser] = useState(false);
+  const [registrationPending, setRegistrationPending] = useState(false);
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -75,6 +76,9 @@ export default function Register() {
         setError(signUpError.message || 'Failed to create account. Please try again.');
         setLoading(false);
         setIsFirstUser(false);
+      } else if (!isFirst) {
+        setRegistrationPending(true);
+        setLoading(false);
       }
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred. Please try again.');
@@ -121,6 +125,50 @@ export default function Register() {
             <p className="text-primary/50 text-sm font-medium animate-pulse">
               Redirecting to dashboard...
             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (registrationPending) {
+    return (
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4"
+        style={{
+          background: 'radial-gradient(circle at 20% 50%, rgba(27, 77, 62, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%), #F5F1E8'
+        }}
+      >
+        <FloatingLeaves />
+        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-primary opacity-5 blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-gold opacity-5 blur-3xl"></div>
+
+        <div className="relative z-10 w-full max-w-md">
+          <div className="glass-card p-10 text-center animate-scale-in">
+            <div className="flex items-center justify-center mb-8 animate-float">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-40 rounded-full"></div>
+                <div className="relative bg-gradient-to-br from-blue-500 to-cyan-600 p-6 rounded-full shadow-glow">
+                  <CheckCircle className="w-12 h-12 text-white" strokeWidth={2} />
+                </div>
+              </div>
+            </div>
+
+            <h1 className="font-heading text-4xl font-bold text-gradient mb-4">
+              Registration Successful!
+            </h1>
+            <p className="text-primary/70 mb-6 text-lg font-medium">
+              Your account has been created and is pending admin approval.
+            </p>
+            <div className="glass-card bg-blue-50/50 p-4 mb-6">
+              <p className="text-primary/60 text-sm font-medium">
+                You will receive a notification once your account is approved. Please check back later or wait for an email confirmation.
+              </p>
+            </div>
+            <Link to="/login">
+              <PremiumButton variant="primary" size="lg" className="w-full">
+                Go to Login
+              </PremiumButton>
+            </Link>
           </div>
         </div>
       </div>

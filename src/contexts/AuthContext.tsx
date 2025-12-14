@@ -83,6 +83,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data.user) {
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('approval_status, rejection_reason')
+          .eq('id', data.user.id)
+          .maybeSingle();
+
+        if (userError) throw userError;
+
+        if (userData?.approval_status === 'pending') {
+          await supabase.auth.signOut();
+          return { error: new Error('Your account is pending approval. Please wait for admin to approve your registration.') };
+        }
+
+        if (userData?.approval_status === 'rejected') {
+          await supabase.auth.signOut();
+          const reason = userData.rejection_reason ? `\nReason: ${userData.rejection_reason}` : '';
+          return { error: new Error(`Your registration was not approved.${reason}\n\nPlease contact admin for more information.`) };
+        }
+
         await loadUserProfile(data.user.id);
       }
 
@@ -106,17 +125,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (authError) throw authError;
       if (!authData.user) throw new Error('Failed to create user');
 
+      const approvalStatus = role === 'admin' ? 'approved' : 'pending';
+      const approvedAt = role === 'admin' ? new Date().toISOString() : null;
+
       const { error: profileError } = await supabase.from('users').insert({
         id: authData.user.id,
         email,
         name,
         phone: phone || null,
         role,
+        approval_status: approvalStatus,
+        approved_at: approvedAt,
       });
 
       if (profileError) throw profileError;
 
-      await loadUserProfile(authData.user.id);
+      if (role === 'admin') {
+        await loadUserProfile(authData.user.id);
+      } else {
+        await supabase.auth.signOut();
+      }
 
       return { error: null };
     } catch (error: any) {

@@ -24,6 +24,7 @@ export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [pendingUsersCount, setPendingUsersCount] = useState(0);
   const notificationCount = notifications.filter(n => !n.is_read).length;
 
   useEffect(() => {
@@ -44,6 +45,10 @@ export default function Header() {
     if (user?.id) {
       fetchNotifications();
 
+      if (user.role === 'admin') {
+        fetchPendingUsersCount();
+      }
+
       const channel = supabase
         .channel('notifications')
         .on(
@@ -60,11 +65,29 @@ export default function Header() {
         )
         .subscribe();
 
+      const usersChannel = supabase
+        .channel('users_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'users',
+          },
+          () => {
+            if (user.role === 'admin') {
+              fetchPendingUsersCount();
+            }
+          }
+        )
+        .subscribe();
+
       return () => {
         supabase.removeChannel(channel);
+        supabase.removeChannel(usersChannel);
       };
     }
-  }, [user?.id]);
+  }, [user?.id, user?.role]);
 
   const fetchNotifications = async () => {
     if (!user?.id) return;
@@ -81,6 +104,20 @@ export default function Header() {
       setNotifications(data || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
+    }
+  };
+
+  const fetchPendingUsersCount = async () => {
+    try {
+      const { count, error } = await supabase
+        .from('users')
+        .select('*', { count: 'exact', head: true })
+        .eq('approval_status', 'pending');
+
+      if (error) throw error;
+      setPendingUsersCount(count || 0);
+    } catch (error) {
+      console.error('Error fetching pending users count:', error);
     }
   };
 
@@ -123,6 +160,15 @@ export default function Header() {
     { name: 'Compliance', path: '/compliance', icon: ClipboardCheck },
     { name: 'Chat', path: '/chat', icon: MessagesSquare },
   ];
+
+  if (user?.role === 'admin') {
+    navLinks.push({
+      name: 'User Approvals',
+      path: '/admin/user-approvals',
+      icon: Shield,
+      badge: pendingUsersCount > 0 ? pendingUsersCount : undefined
+    } as any);
+  }
 
   const isActive = (path: string) => location.pathname === path;
   const isFinanceActive = () => location.pathname.startsWith('/expenses') || location.pathname.startsWith('/investments') || location.pathname === '/finance';
@@ -199,6 +245,11 @@ export default function Header() {
                         }`} />
                       )}
                       <span className="relative z-10">{link.name}</span>
+                      {(link as any).badge && (
+                        <span className="relative z-10 ml-1 px-2 py-0.5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full shadow-sm animate-pulse">
+                          {(link as any).badge}
+                        </span>
+                      )}
                       {!isActive(link.path) && (
                         <span className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                       )}
@@ -393,6 +444,11 @@ export default function Header() {
                         }`} />
                       )}
                       <span>{link.name}</span>
+                      {(link as any).badge && (
+                        <span className="ml-auto px-2 py-0.5 bg-gradient-gold text-primary-dark text-xs font-bold rounded-full shadow-sm animate-pulse">
+                          {(link as any).badge}
+                        </span>
+                      )}
                     </Link>
                     {link.submenu && (
                       <div className="ml-4 mt-2 flex flex-col gap-2 pl-4 border-l-2 border-primary/20">
