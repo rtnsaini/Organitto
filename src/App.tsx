@@ -26,6 +26,7 @@ import Compliance from './pages/Compliance';
 import LicenseDetail from './pages/LicenseDetail';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
+import Notifications from './pages/Notifications';
 
 function AppContent() {
   const location = useLocation();
@@ -182,6 +183,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
               </ProtectedRoute>
             }
           />

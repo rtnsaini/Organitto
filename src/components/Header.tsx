@@ -2,6 +2,17 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Leaf, Bell, User, Settings, LogOut, Menu, X, Shield, ChevronDown, Package, FlaskConical, FileCheck, MessageCircle, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import { formatDistanceToNow } from 'date-fns';
+
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  is_read: boolean;
+  created_at: string;
+}
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -12,13 +23,8 @@ export default function Header() {
   const [showFinanceMenu, setShowFinanceMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const notifications = [
-    { id: 1, title: 'New expense pending approval', message: 'Marketing expense of ₹5,000', time: '5 min ago', unread: true },
-    { id: 2, title: 'Batch B-2024-001 ready', message: 'Quality testing completed', time: '1 hour ago', unread: true },
-    { id: 3, title: 'License expiring soon', message: 'FSSAI license expires in 30 days', time: '2 hours ago', unread: true },
-  ];
-  const notificationCount = notifications.filter(n => n.unread).length;
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notificationCount = notifications.filter(n => !n.is_read).length;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('organitto-theme');
@@ -33,6 +39,50 @@ export default function Header() {
 
     document.documentElement.style.transition = 'background-color 0.3s ease-in-out, color 0.3s ease-in-out';
   }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchNotifications();
+
+      const channel = supabase
+        .channel('notifications')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            fetchNotifications();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [user?.id]);
+
+  const fetchNotifications = async () => {
+    if (!user?.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setNotifications(data || []);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
 
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
@@ -186,12 +236,12 @@ export default function Header() {
                           <div
                             key={notification.id}
                             className={`p-4 border-b border-primary/5 hover:bg-primary/5 transition-colors cursor-pointer ${
-                              notification.unread ? 'bg-gold/5' : ''
+                              !notification.is_read ? 'bg-gold/5' : ''
                             }`}
                           >
                             <div className="flex items-start gap-3">
                               <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                                notification.unread ? 'bg-gold' : 'bg-gray-300'
+                                !notification.is_read ? 'bg-gold' : 'bg-gray-300'
                               }`} />
                               <div className="flex-1 min-w-0">
                                 <p className="font-semibold text-primary text-sm">
@@ -201,7 +251,7 @@ export default function Header() {
                                   {notification.message}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-2">
-                                  {notification.time}
+                                  {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                                 </p>
                               </div>
                             </div>
@@ -216,7 +266,10 @@ export default function Header() {
                     </div>
                     <div className="p-3 bg-gray-50 border-t border-primary/10">
                       <button
-                        onClick={() => setShowNotifications(false)}
+                        onClick={() => {
+                          setShowNotifications(false);
+                          navigate('/notifications');
+                        }}
                         className="w-full text-center text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
                       >
                         View All Notifications
