@@ -104,6 +104,19 @@ export default function Finance() {
     ? ((expenseSummary.thisMonth - expenseSummary.lastMonth) / expenseSummary.lastMonth) * 100
     : 0;
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-mesh">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-96">
+            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-mesh">
       <Header />
@@ -115,7 +128,7 @@ export default function Finance() {
             </div>
             <div>
               <h1 className="text-4xl font-bold text-primary">Finance Overview</h1>
-              <p className="text-dark-brown/70 font-medium mt-1">Track expenses, investments, and financial insights</p>
+              <p className="text-dark-brown/70 font-medium mt-1">Expense and investment analytics</p>
             </div>
           </div>
         </div>
@@ -126,7 +139,7 @@ export default function Finance() {
             value={`₹${expenseSummary.total.toLocaleString()}`}
             icon={Receipt}
             trend={monthChangePercent > 0 ? 'up' : monthChangePercent < 0 ? 'down' : undefined}
-            trendValue={`${Math.abs(monthChangePercent).toFixed(1)}% vs last month`}
+            trendValue={monthChangePercent !== 0 ? `${Math.abs(monthChangePercent).toFixed(1)}% vs last month` : undefined}
             iconColor="bg-gradient-to-br from-red-500 to-pink-600"
           />
           <StatsCard
@@ -139,8 +152,7 @@ export default function Finance() {
             title="Investments"
             value={`₹${investmentSummary.total.toLocaleString()}`}
             icon={PiggyBank}
-            trend="up"
-            trendValue={`${investmentSummary.count} total`}
+            trendValue={investmentSummary.count > 0 ? `${investmentSummary.count} total` : undefined}
             iconColor="bg-gradient-to-br from-green-500 to-emerald-600"
           />
           <StatsCard
@@ -152,11 +164,11 @@ export default function Finance() {
           />
         </div>
 
-        {!loading && expenseSummary.byCategory.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {expenseSummary.byCategory.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="glass-card p-6">
               <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
+                <Receipt className="w-5 h-5" />
                 Expense by Category
               </h2>
               <ExpenseCategoryChart
@@ -169,8 +181,8 @@ export default function Finance() {
 
             <div className="glass-card p-6">
               <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                <TrendingDown className="w-5 h-5" />
-                Monthly Overview
+                <TrendingUp className="w-5 h-5" />
+                Expenses vs Investments
               </h2>
               <InvestmentExpenseChart
                 data={[
@@ -188,13 +200,7 @@ export default function Finance() {
               />
             </div>
           </div>
-        ) : !loading ? (
-          <div className="glass-card p-8 text-center">
-            <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">No financial data available yet</p>
-            <p className="text-sm text-gray-400 mt-2">Add expenses and investments to see insights</p>
-          </div>
-        ) : null}
+        )}
       </main>
     </div>
   );
