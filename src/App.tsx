@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
+import EditExpense from './pages/EditExpense';
 import ExpenseList from './pages/ExpenseList';
 import ExpenseReports from './pages/ExpenseReports';
 import Investments from './pages/Investments';
@@ -55,6 +56,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <AddExpense />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expenses/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditExpense />
               </ProtectedRoute>
             }
           />

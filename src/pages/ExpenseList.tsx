@@ -639,7 +639,7 @@ export default function ExpenseList() {
                                     </button>
                                   </>
                                 )}
-                                {(isAdmin || expense.submitted_by === user?.id) && expense.status === 'pending' && (
+                                {isAdmin && (
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -762,7 +762,7 @@ export default function ExpenseList() {
                       </div>
                     )}
 
-                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-dark-brown/10">
+                    <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-dark-brown/10">
                       {expense.bill_url && (
                         <button
                           onClick={() => viewBill(expense)}
@@ -789,6 +789,15 @@ export default function ExpenseList() {
                             Reject
                           </button>
                         </>
+                      )}
+                      {isAdmin && (
+                        <button
+                          onClick={() => navigate(`/expenses/edit/${expense.id}`)}
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg hover:bg-accent/20 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          Edit
+                        </button>
                       )}
                     </div>
                   </div>
