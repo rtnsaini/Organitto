@@ -7,14 +7,45 @@ interface QuickAction {
   label: string;
   path: string;
   color: string;
+  bgGradient: string;
 }
 
 const quickActions: QuickAction[] = [
-  { icon: Receipt, label: 'Add Expense', path: '/expenses/new', color: 'from-secondary to-accent' },
-  { icon: Package, label: 'Add Product', path: '/products', color: 'from-primary to-sage' },
-  { icon: Layers, label: 'Add Batch', path: '/batches', color: 'from-sage to-primary' },
-  { icon: DollarSign, label: 'Record Sale', path: '/expenses/new', color: 'from-accent to-secondary' },
-  { icon: FileText, label: 'Quick Note', path: '/chat', color: 'from-primary to-accent' },
+  {
+    icon: Receipt,
+    label: 'Add Expense',
+    path: '/expenses/new',
+    color: 'text-orange-500',
+    bgGradient: 'from-orange-500/20 to-orange-600/10'
+  },
+  {
+    icon: Package,
+    label: 'Add Product',
+    path: '/products',
+    color: 'text-emerald-500',
+    bgGradient: 'from-emerald-500/20 to-emerald-600/10'
+  },
+  {
+    icon: Layers,
+    label: 'Add Batch',
+    path: '/batches',
+    color: 'text-blue-500',
+    bgGradient: 'from-blue-500/20 to-blue-600/10'
+  },
+  {
+    icon: DollarSign,
+    label: 'Record Sale',
+    path: '/expenses/new',
+    color: 'text-green-500',
+    bgGradient: 'from-green-500/20 to-green-600/10'
+  },
+  {
+    icon: FileText,
+    label: 'Quick Note',
+    path: '/chat',
+    color: 'text-purple-500',
+    bgGradient: 'from-purple-500/20 to-purple-600/10'
+  },
 ];
 
 export default function FloatingActionButton() {
@@ -31,25 +62,25 @@ export default function FloatingActionButton() {
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 bg-dark-brown/20 backdrop-blur-sm"
+            className="fixed inset-0 bg-dark-brown/40 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="relative z-10 flex flex-col-reverse gap-4 mb-4">
+          <div className="relative z-10 flex flex-col-reverse gap-3 mb-5">
             {quickActions.map((action, index) => {
               const Icon = action.icon;
               return (
                 <button
                   key={action.label}
                   onClick={() => handleActionClick(action.path)}
-                  className="group flex items-center gap-4 animate-scale-in"
+                  className="group flex items-center justify-end gap-3 animate-scale-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <span className="glass-card px-4 py-2 font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap shadow-glow hidden md:block">
+                  <div className="glass-card px-5 py-3 font-semibold text-dark-brown whitespace-nowrap shadow-xl border border-cream/20 backdrop-blur-md">
                     {action.label}
-                  </span>
-                  <div className={`w-14 h-14 md:w-12 md:h-12 bg-gradient-to-br ${action.color} rounded-full flex items-center justify-center shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:scale-110 cursor-pointer`}>
-                    <Icon className="w-6 h-6 md:w-5 md:h-5 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div className={`w-16 h-16 bg-gradient-to-br ${action.bgGradient} backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-2 border-white/30 glass-card`}>
+                    <Icon className={`w-8 h-8 ${action.color} drop-shadow-lg`} strokeWidth={2.5} />
                   </div>
                 </button>
               );
@@ -60,21 +91,21 @@ export default function FloatingActionButton() {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`relative z-10 w-16 h-16 md:w-14 md:h-14 bg-gradient-primary rounded-full flex items-center justify-center shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`relative z-10 w-20 h-20 bg-gradient-to-br from-primary via-sage to-secondary rounded-2xl flex items-center justify-center shadow-2xl hover:shadow-[0_0_30px_rgba(139,69,19,0.5)] transition-all duration-300 hover:scale-110 active:scale-95 border-2 border-white/30 ${
           isOpen ? 'rotate-45' : 'rotate-0'
         }`}
         aria-label={isOpen ? 'Close quick actions' : 'Open quick actions'}
       >
-        <div className="absolute inset-0 bg-gradient-gold opacity-0 hover:opacity-20 rounded-full transition-opacity duration-300"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/10 to-white/0 rounded-2xl"></div>
         {isOpen ? (
-          <X className="w-7 h-7 md:w-6 md:h-6 text-white relative z-10" strokeWidth={3} />
+          <X className="w-9 h-9 text-white relative z-10 drop-shadow-lg" strokeWidth={3} />
         ) : (
-          <Plus className="w-7 h-7 md:w-6 md:h-6 text-white relative z-10" strokeWidth={3} />
+          <Plus className="w-9 h-9 text-white relative z-10 drop-shadow-lg" strokeWidth={3} />
         )}
       </button>
 
       {!isOpen && (
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
+        <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-pulse shadow-lg"></div>
       )}
     </div>
   );
