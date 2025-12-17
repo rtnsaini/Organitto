@@ -235,18 +235,111 @@
     background: rgba(45, 80, 22, 0.05);
   }
 
-  .btn-gold {
-    background: linear-gradient(135deg, #B8986E 0%, #9B7E3B 100%);
+  .btn-premium {
+    position: relative;
+    background: linear-gradient(135deg, #1B4D3E 0%, #2D5016 100%);
     color: white;
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     border: none;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 0.875rem;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     cursor: pointer;
-    transition: all 0.15s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(45, 80, 22, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .btn-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-premium:hover::before {
+    left: 100%;
+  }
+
+  .btn-premium:hover {
+    box-shadow: 0 8px 24px rgba(45, 80, 22, 0.35), 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .btn-premium:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(45, 80, 22, 0.3);
+  }
+
+  .btn-gold {
+    position: relative;
+    background: linear-gradient(135deg, #D4AF37 0%, #B8986E 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-gold:hover::before {
+    left: 100%;
+  }
+
+  .btn-gold:hover {
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35), 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .btn-gold:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  }
+
+  .btn-neu {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    color: #2D5016;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(45, 80, 22, 0.15);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     height: 36px;
     display: inline-flex;
     align-items: center;
@@ -254,9 +347,16 @@
     gap: 8px;
   }
 
-  .btn-gold:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
+  .btn-neu:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(45, 80, 22, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .btn-neu:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .btn-icon {
