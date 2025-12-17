@@ -118,7 +118,7 @@ export default function InvestmentCard({
           />
         </div>
 
-        {recentInvestments.length > 0 && (
+        {recentInvestments.length > 0 ? (
           <div className="space-y-2">
             <p className="text-xs font-semibold text-dark-brown/60 uppercase tracking-wide">
               Recent Investments
@@ -142,6 +142,11 @@ export default function InvestmentCard({
                 </p>
               </div>
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 bg-white/60 backdrop-blur-sm rounded-lg border border-dashed border-dark-brown/20">
+            <p className="text-sm text-dark-brown/50">No investments yet</p>
+            <p className="text-xs text-dark-brown/40 mt-1">Click + to add first investment</p>
           </div>
         )}
 

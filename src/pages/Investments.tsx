@@ -40,6 +40,7 @@ type ViewTab = 'by_partner' | 'all_investments' | 'statistics';
 export default function Investments() {
   const { user } = useAuth();
   const [investments, setInvestments] = useState<Investment[]>([]);
+  const [allUsers, setAllUsers] = useState<{ id: string; name: string; email: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<ViewTab>('by_partner');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -55,6 +56,7 @@ export default function Investments() {
 
   useEffect(() => {
     fetchInvestments();
+    fetchAllUsers();
 
     const channel = supabase
       .channel('investments-changes')
@@ -67,6 +69,20 @@ export default function Investments() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const fetchAllUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, name, email')
+        .order('name');
+
+      if (error) throw error;
+      setAllUsers(data || []);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const fetchInvestments = async () => {
     try {
@@ -160,35 +176,28 @@ export default function Investments() {
     }
   };
 
-  const partnerInvestments: PartnerInvestments[] = investments.reduce((acc, inv) => {
-    const partnerId = inv.partner_id;
-    const existing = acc.find(p => p.partner.id === partnerId);
+  const partnerInvestments: PartnerInvestments[] = allUsers.map(user => {
+    const userInvestments = investments.filter(inv => inv.partner_id === user.id);
+    const total = userInvestments.reduce((sum, inv) => sum + inv.amount, 0);
 
-    if (existing) {
-      existing.investments.push(inv);
-      existing.total += inv.amount;
-    } else if (inv.users) {
-      acc.push({
-        partner: {
-          id: partnerId,
-          name: inv.users.name,
-          email: inv.users.email,
-        },
-        investments: [inv],
-        total: inv.amount,
-      });
-    }
-
-    return acc;
-  }, [] as PartnerInvestments[]);
+    return {
+      partner: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      investments: userInvestments,
+      total,
+    };
+  });
 
   partnerInvestments.sort((a, b) => b.total - a.total);
 
   const totalInvestment = investments
     .filter(inv => inv.status === 'approved')
     .reduce((sum, inv) => sum + inv.amount, 0);
-  const uniquePartners = new Set(investments.filter(inv => inv.status === 'approved').map(inv => inv.partner_id)).size;
-  const avgPerPartner = uniquePartners > 0 ? totalInvestment / uniquePartners : 0;
+  const partnersWithInvestments = partnerInvestments.filter(p => p.investments.some(inv => inv.status === 'approved')).length;
+  const avgPerPartner = allUsers.length > 0 ? totalInvestment / allUsers.length : 0;
 
   const topInvestorId = partnerInvestments.length > 0 ? partnerInvestments[0].partner.id : null;
 
@@ -270,8 +279,8 @@ export default function Investments() {
                 </div>
                 <span className="text-sm font-semibold text-sage uppercase tracking-wide">Partners</span>
               </div>
-              <p className="text-4xl font-bold text-sage mb-1">{uniquePartners}</p>
-              <p className="text-sm text-dark-brown/60">Partners Invested</p>
+              <p className="text-4xl font-bold text-sage mb-1">{allUsers.length}</p>
+              <p className="text-sm text-dark-brown/60">Total Partners</p>
             </div>
 
             <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-xl p-6 border-2 border-secondary/30 shadow-soft">
@@ -330,16 +339,9 @@ export default function Investments() {
             </div>
           ) : activeTab === 'by_partner' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {partnerInvestments.length === 0 ? (
+              {allUsers.length === 0 ? (
                 <div className="col-span-full text-center py-12 bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft">
-                  <p className="text-dark-brown/50 mb-4">No investments recorded yet</p>
-                  <button
-                    onClick={() => setShowAddModal(true)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-secondary text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Add First Investment
-                  </button>
+                  <p className="text-dark-brown/50 mb-4">No partners found</p>
                 </div>
               ) : (
                 partnerInvestments.map((partnerInv) => (
@@ -348,8 +350,8 @@ export default function Investments() {
                     partner={partnerInv.partner}
                     investments={partnerInv.investments}
                     totalInvestment={partnerInv.total}
-                    percentageOfTotal={(partnerInv.total / totalInvestment) * 100}
-                    isTopInvestor={partnerInv.partner.id === topInvestorId}
+                    percentageOfTotal={totalInvestment > 0 ? (partnerInv.total / totalInvestment) * 100 : 0}
+                    isTopInvestor={partnerInv.partner.id === topInvestorId && partnerInv.total > 0}
                     onViewAll={() => {
                       setSelectedPartner(partnerInv);
                       setShowHistory(true);
