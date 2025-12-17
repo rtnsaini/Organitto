@@ -51,10 +51,7 @@ export default function UserApprovals() {
 
       const { data: approved } = await supabase
         .from('users')
-        .select(`
-          *,
-          approver:approved_by(name)
-        `)
+        .select('*')
         .eq('approval_status', 'approved')
         .order('approved_at', { ascending: false });
 
@@ -64,13 +61,29 @@ export default function UserApprovals() {
         .eq('approval_status', 'rejected')
         .order('created_at', { ascending: false });
 
+      if (approved && approved.length > 0) {
+        const approverIds = approved
+          .map(u => u.approved_by)
+          .filter((id): id is string => id !== null);
+
+        const { data: approvers } = await supabase
+          .from('users')
+          .select('id, name')
+          .in('id', approverIds);
+
+        const approverMap = new Map(approvers?.map(a => [a.id, a.name]) || []);
+
+        setApprovedUsers(
+          approved.map(u => ({
+            ...u,
+            approver_name: u.approved_by ? (approverMap.get(u.approved_by) || 'Self-registered') : 'Self-registered'
+          }))
+        );
+      } else {
+        setApprovedUsers([]);
+      }
+
       setPendingUsers(pending || []);
-      setApprovedUsers(
-        (approved || []).map(u => ({
-          ...u,
-          approver_name: u.approver?.name || 'Unknown'
-        }))
-      );
       setRejectedUsers(rejected || []);
     } catch (error) {
       console.error('Error fetching users:', error);

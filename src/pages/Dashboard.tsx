@@ -49,21 +49,17 @@ export default function Dashboard() {
       const [investmentsRes, expensesRes, productsRes, activitiesRes] = await Promise.all([
         supabase
           .from('investments')
-          .select('amount')
-          .eq('user_id', user.id),
+          .select('amount'),
         supabase
           .from('expenses')
-          .select('amount')
-          .eq('user_id', user.id),
+          .select('amount'),
         supabase
           .from('products')
-          .select('id, status')
-          .eq('user_id', user.id)
-          .in('status', ['planning', 'testing', 'production']),
+          .select('id, current_stage')
+          .in('current_stage', ['idea', 'research', 'formula', 'testing', 'packaging', 'printing', 'production', 'ready']),
         supabase
           .from('activity_log')
           .select('*')
-          .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(10),
       ]);
