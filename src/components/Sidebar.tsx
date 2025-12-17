@@ -10,6 +10,7 @@ import {
   Leaf,
   ShieldCheck,
   UserCheck,
+  MessageCircle,
   Settings,
   LogOut,
   ChevronRight
@@ -181,6 +182,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               label="Compliance"
               path="/compliance"
               active={isActive('/compliance')}
+            />
+
+            <NavItem
+              icon={<MessageCircle size={18} />}
+              label="Team Chat"
+              path="/chat"
+              active={isActive('/chat')}
             />
 
             {user?.role === 'admin' && (

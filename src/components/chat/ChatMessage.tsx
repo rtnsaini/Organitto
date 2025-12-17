@@ -100,41 +100,34 @@ export default function ChatMessage({ message, isOwnMessage, onDelete, onEdit }:
 
   return (
     <div
-      className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`group relative ${isOwnMessage ? 'flex justify-end' : 'flex justify-start'}`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-sage flex items-center justify-center text-white font-bold flex-shrink-0">
-        {message.sender_id?.substring(0, 2).toUpperCase() || 'U'}
-      </div>
-
       <div className={`flex-1 max-w-2xl ${isOwnMessage ? 'items-end' : 'items-start'} flex flex-col`}>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-semibold text-dark-brown">
-            {isOwnMessage ? 'You' : 'Team Member'}
-          </span>
-          <span className="text-xs text-dark-brown/40">
+        <div className={`flex items-center gap-2 mb-2 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
+          <span className="text-xs text-dark-brown/50 font-semibold">
             {format(new Date(message.created_at), 'h:mm a')}
           </span>
           {message.is_edited && (
-            <span className="text-xs text-dark-brown/40 italic">(edited)</span>
+            <span className="text-xs text-dark-brown/40 italic bg-dark-brown/5 px-2 py-0.5 rounded-full">edited</span>
           )}
         </div>
 
-        <div className="relative group">
+        <div className="relative">
           {isEditing ? (
-            <div className="bg-white border-2 border-primary rounded-xl p-3">
+            <div className="bg-white/90 backdrop-blur-sm border-2 border-primary/30 rounded-2xl p-5 shadow-xl">
               <textarea
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
-                className="w-full p-2 bg-cream/30 border border-dark-brown/10 rounded-lg focus:outline-none focus:border-primary resize-none"
+                className="w-full p-3 bg-cream/30 border-2 border-white/60 rounded-xl focus:outline-none focus:border-primary resize-none font-medium text-dark-brown"
                 rows={3}
                 autoFocus
               />
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-3 mt-3">
                 <button
                   onClick={handleEdit}
-                  className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  className="px-5 py-2 bg-gradient-to-br from-primary to-sage text-white rounded-xl text-sm font-bold hover:shadow-xl transition-all hover:scale-105 active:scale-95"
                 >
                   Save
                 </button>
@@ -143,7 +136,7 @@ export default function ChatMessage({ message, isOwnMessage, onDelete, onEdit }:
                     setIsEditing(false);
                     setEditText(message.message_text);
                   }}
-                  className="px-3 py-1 bg-dark-brown/10 text-dark-brown rounded-lg text-sm font-semibold hover:bg-dark-brown/20 transition-colors"
+                  className="px-5 py-2 bg-white border-2 border-dark-brown/20 text-dark-brown rounded-xl text-sm font-bold hover:bg-dark-brown/5 transition-all hover:scale-105 active:scale-95"
                 >
                   Cancel
                 </button>
@@ -152,33 +145,33 @@ export default function ChatMessage({ message, isOwnMessage, onDelete, onEdit }:
           ) : (
             <>
               <div
-                className={`rounded-xl px-4 py-3 ${
+                className={`rounded-2xl px-5 py-4 shadow-lg transition-all ${
                   isOwnMessage
-                    ? 'bg-gradient-to-br from-primary to-sage text-white'
-                    : 'bg-white border-2 border-dark-brown/5 text-dark-brown'
+                    ? 'bg-gradient-to-br from-primary via-sage to-secondary text-white border-2 border-white/30'
+                    : 'bg-white/90 backdrop-blur-sm border-2 border-white/60 text-dark-brown'
                 }`}
               >
                 <div
-                  className="text-sm leading-relaxed break-words"
+                  className={`text-base leading-relaxed break-words font-medium ${isOwnMessage ? 'text-white' : 'text-dark-brown'}`}
                   dangerouslySetInnerHTML={{ __html: formatMessageText(message.message_text) }}
                 />
               </div>
 
               {showActions && isOwnMessage && (
-                <div className="absolute -top-3 right-0 bg-white rounded-lg shadow-soft border border-dark-brown/10 flex gap-1 p-1">
+                <div className="absolute -top-4 right-0 bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl border-2 border-white/60 flex gap-2 p-2">
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="p-1.5 hover:bg-cream/50 rounded transition-colors"
+                    className="p-2 hover:bg-primary/10 rounded-lg transition-all hover:scale-110 active:scale-95"
                     title="Edit"
                   >
-                    <Edit className="w-4 h-4 text-dark-brown/60" />
+                    <Edit className="w-5 h-5 text-primary" strokeWidth={2} />
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="p-1.5 hover:bg-soft-red/10 rounded transition-colors"
+                    className="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110 active:scale-95"
                     title="Delete"
                   >
-                    <Trash2 className="w-4 h-4 text-soft-red" />
+                    <Trash2 className="w-5 h-5 text-red-500" strokeWidth={2} />
                   </button>
                 </div>
               )}
@@ -187,30 +180,30 @@ export default function ChatMessage({ message, isOwnMessage, onDelete, onEdit }:
         </div>
 
         {reactionEntries.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className={`flex flex-wrap gap-2 mt-3 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
             {reactionEntries.map(([emoji, users]: [string, any]) => (
               <button
                 key={emoji}
                 onClick={() => handleReaction(emoji)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all hover:scale-110 active:scale-95 shadow-md ${
                   users.includes(user?.id)
-                    ? 'bg-accent/20 border-2 border-accent'
-                    : 'bg-white border-2 border-dark-brown/10 hover:border-accent'
+                    ? 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-400'
+                    : 'bg-white/90 backdrop-blur-sm border-2 border-white/60 hover:border-primary/40'
                 }`}
               >
-                <span>{emoji}</span>
-                <span className="font-semibold">{users.length}</span>
+                <span className="text-lg">{emoji}</span>
+                <span className="text-dark-brown">{users.length}</span>
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex gap-1 mt-1">
+        <div className={`flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
           {QUICK_REACTIONS.map((emoji) => (
             <button
               key={emoji}
               onClick={() => handleReaction(emoji)}
-              className="text-lg opacity-0 group-hover:opacity-100 hover:scale-125 transition-all"
+              className="text-xl hover:scale-125 active:scale-95 transition-all p-1.5 hover:bg-white/60 rounded-xl backdrop-blur-sm"
               title={`React with ${emoji}`}
             >
               {emoji}

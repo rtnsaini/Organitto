@@ -185,23 +185,25 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      <div className="border-b-2 border-dark-brown/5 p-4 bg-white">
+      <div className="border-b-2 border-white/40 p-6 bg-gradient-to-r from-white/60 to-cream/40 backdrop-blur-sm">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="text-3xl">{room.icon}</div>
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-sage/10 rounded-2xl flex items-center justify-center text-3xl shadow-lg border-2 border-white/50">
+              {room.icon}
+            </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-heading text-xl font-bold text-primary truncate">
+              <h3 className="font-heading text-2xl font-bold text-primary truncate drop-shadow-sm">
                 {room.name}
               </h3>
               {room.description && (
-                <p className="text-sm text-dark-brown/60 truncate">{room.description}</p>
+                <p className="text-sm text-dark-brown/70 truncate font-medium">{room.description}</p>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-dark-brown/40" />
-            <span className="text-sm text-dark-brown/60 font-medium">
+          <div className="flex items-center gap-3 px-4 py-2 bg-white/60 rounded-xl border border-white/50 shadow-md backdrop-blur-sm">
+            <Users className="w-5 h-5 text-primary" strokeWidth={2.5} />
+            <span className="text-sm text-primary font-bold">
               {teamMembers.length} partner{teamMembers.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -211,36 +213,36 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 bg-cream/30"
+        className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-cream/40 to-white/30"
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : messages.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {messages.map((message, index) => (
               <div key={message.id}>
                 {shouldShowDateSeparator(message, messages[index - 1]) && (
-                  <div className="flex items-center gap-3 my-6">
-                    <div className="flex-1 h-px bg-dark-brown/10"></div>
-                    <span className="text-xs font-semibold text-dark-brown/40 px-3 py-1 bg-white rounded-full">
+                  <div className="flex items-center gap-4 my-8">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-dark-brown/20 to-transparent"></div>
+                    <span className="text-xs font-bold text-dark-brown/50 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50">
                       {getDateSeparator(message.created_at)}
                     </span>
-                    <div className="flex-1 h-px bg-dark-brown/10"></div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-dark-brown/20 to-transparent"></div>
                   </div>
                 )}
 
                 <div className="flex items-start gap-3">
                   {message.sender_id !== user?.id && (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-sage flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary via-sage to-secondary flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-lg border-2 border-white/30">
                       {getSenderName(message.sender_id)[0]?.toUpperCase()}
                     </div>
                   )}
 
                   <div className={`flex-1 ${message.sender_id === user?.id ? 'ml-auto' : ''}`}>
                     {message.sender_id !== user?.id && (
-                      <div className="text-sm font-semibold text-primary mb-1">
+                      <div className="text-sm font-bold text-primary mb-2 ml-1">
                         {getSenderName(message.sender_id)}
                       </div>
                     )}
@@ -253,7 +255,7 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
                   </div>
 
                   {message.sender_id === user?.id && (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-sage flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary via-sage to-secondary flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-lg border-2 border-white/30">
                       {getSenderName(message.sender_id)[0]?.toUpperCase()}
                     </div>
                   )}
@@ -264,12 +266,14 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="text-6xl mb-4">{room.icon}</div>
-              <h4 className="font-heading text-xl font-bold text-dark-brown/60 mb-2">
+            <div className="text-center p-12">
+              <div className="w-24 h-24 bg-gradient-to-br from-primary/10 to-sage/10 rounded-full flex items-center justify-center mx-auto mb-6 text-6xl shadow-xl border-2 border-white/50">
+                {room.icon}
+              </div>
+              <h4 className="font-heading text-2xl font-bold text-primary mb-3">
                 No messages yet
               </h4>
-              <p className="text-dark-brown/40">
+              <p className="text-dark-brown/60 font-medium text-lg">
                 Start the conversation with your team!
               </p>
             </div>
@@ -277,13 +281,13 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
         )}
 
         {typingUsers.length > 0 && (
-          <div className="flex items-center gap-2 p-3 bg-white rounded-lg shadow-soft mt-4">
-            <div className="flex gap-1">
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+          <div className="flex items-center gap-3 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mt-6 border-2 border-white/50">
+            <div className="flex gap-1.5">
+              <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce shadow-sm" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce shadow-sm" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce shadow-sm" style={{ animationDelay: '300ms' }}></span>
             </div>
-            <span className="text-sm text-dark-brown/60">
+            <span className="text-sm text-dark-brown/70 font-medium">
               {getTypingUserNames()} {typingUsers.length === 1 ? 'is' : 'are'} typing...
             </span>
           </div>
@@ -293,9 +297,9 @@ export default function ChatMessageArea({ room, teamMembers }: ChatMessageAreaPr
       {showScrollButton && (
         <button
           onClick={scrollToBottom}
-          className="absolute bottom-24 right-8 p-3 bg-primary text-white rounded-full shadow-soft-lg hover:shadow-soft-xl transition-all z-10"
+          className="absolute bottom-28 right-8 p-4 bg-gradient-to-br from-primary to-sage text-white rounded-2xl shadow-2xl hover:shadow-[0_8px_30px_rgba(139,69,19,0.4)] transition-all z-10 hover:scale-110 active:scale-95 border-2 border-white/30"
         >
-          <ChevronDown className="w-5 h-5" />
+          <ChevronDown className="w-6 h-6" strokeWidth={2.5} />
         </button>
       )}
 

@@ -158,56 +158,56 @@ export default function MessageComposer({ roomId, onMessageSent }: MessageCompos
   };
 
   return (
-    <div className="border-t-2 border-dark-brown/5 bg-white p-4">
-      <form onSubmit={handleSendMessage} className="flex flex-col gap-3">
-        <div className="flex items-end gap-2">
-          <div className="flex-1 bg-cream/50 border-2 border-dark-brown/10 rounded-xl focus-within:border-primary transition-colors">
+    <div className="border-t-2 border-white/40 bg-gradient-to-br from-white/70 to-cream/50 p-6 backdrop-blur-sm">
+      <form onSubmit={handleSendMessage} className="flex flex-col gap-4">
+        <div className="flex items-end gap-3">
+          <div className="flex-1 bg-white/80 border-2 border-white/60 rounded-2xl focus-within:border-primary/40 focus-within:shadow-xl transition-all shadow-lg backdrop-blur-sm">
             <textarea
               ref={textareaRef}
               value={message}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type a message... (Shift+Enter for new line)"
+              placeholder="Type your message... (Shift+Enter for new line)"
               rows={1}
-              className="w-full px-4 py-3 bg-transparent resize-none focus:outline-none"
+              className="w-full px-5 py-4 bg-transparent resize-none focus:outline-none text-dark-brown placeholder:text-dark-brown/40 font-medium"
               style={{ maxHeight: '200px' }}
             />
 
-            <div className="flex items-center gap-2 px-4 pb-3">
+            <div className="flex items-center gap-2 px-5 pb-4">
               <button
                 type="button"
-                className="p-2 hover:bg-dark-brown/5 rounded-lg transition-colors text-dark-brown/60 hover:text-primary"
+                className="p-2.5 hover:bg-primary/10 rounded-xl transition-all text-dark-brown/60 hover:text-primary hover:scale-110 active:scale-95"
                 title="Attach file"
               >
-                <Paperclip className="w-5 h-5" />
+                <Paperclip className="w-5 h-5" strokeWidth={2} />
               </button>
 
               <button
                 type="button"
-                className="p-2 hover:bg-dark-brown/5 rounded-lg transition-colors text-dark-brown/60 hover:text-primary"
+                className="p-2.5 hover:bg-primary/10 rounded-xl transition-all text-dark-brown/60 hover:text-primary hover:scale-110 active:scale-95"
                 title="Attach image"
               >
-                <ImageIcon className="w-5 h-5" />
+                <ImageIcon className="w-5 h-5" strokeWidth={2} />
               </button>
 
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className="p-2 hover:bg-dark-brown/5 rounded-lg transition-colors text-dark-brown/60 hover:text-primary"
+                  className="p-2.5 hover:bg-primary/10 rounded-xl transition-all text-dark-brown/60 hover:text-primary hover:scale-110 active:scale-95"
                   title="Add emoji"
                 >
-                  <Smile className="w-5 h-5" />
+                  <Smile className="w-5 h-5" strokeWidth={2} />
                 </button>
 
                 {showEmojiPicker && (
-                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-soft-lg border-2 border-dark-brown/5 p-3 grid grid-cols-6 gap-2">
+                  <div className="absolute bottom-full left-0 mb-3 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-white/60 p-4 grid grid-cols-6 gap-2">
                     {EMOJI_LIST.map((emoji) => (
                       <button
                         key={emoji}
                         type="button"
                         onClick={() => insertEmoji(emoji)}
-                        className="text-2xl hover:bg-cream/50 rounded-lg p-2 transition-colors"
+                        className="text-2xl hover:bg-primary/10 rounded-xl p-2 transition-all hover:scale-125 active:scale-95"
                       >
                         {emoji}
                       </button>
@@ -218,25 +218,34 @@ export default function MessageComposer({ roomId, onMessageSent }: MessageCompos
 
               <div className="flex-1"></div>
 
-              <span className="text-xs text-dark-brown/40">
-                {message.length > 0 && `${message.length} characters`}
-              </span>
+              {message.length > 0 && (
+                <span className="text-xs text-dark-brown/50 font-semibold bg-dark-brown/5 px-3 py-1.5 rounded-lg">
+                  {message.length} chars
+                </span>
+              )}
             </div>
           </div>
 
           <button
             type="submit"
             disabled={!message.trim() || sending}
-            className="p-4 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+            className="p-5 bg-gradient-to-br from-primary via-sage to-secondary text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 border-2 border-white/30 shadow-xl"
+            title="Send message"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-6 h-6" strokeWidth={2.5} />
           </button>
         </div>
 
-        <p className="text-xs text-dark-brown/40 px-1">
-          Use <span className="font-mono bg-dark-brown/5 px-1 rounded">@username</span> to mention someone •{' '}
-          <span className="font-mono bg-dark-brown/5 px-1 rounded">**bold**</span> for bold text
-        </p>
+        <div className="flex items-center gap-2 px-2">
+          <div className="flex-1 flex flex-wrap gap-2 text-xs text-dark-brown/50">
+            <span className="bg-white/60 px-3 py-1.5 rounded-lg font-medium border border-white/40">
+              <span className="font-mono text-primary font-semibold">@username</span> to mention
+            </span>
+            <span className="bg-white/60 px-3 py-1.5 rounded-lg font-medium border border-white/40">
+              <span className="font-mono text-primary font-semibold">**text**</span> for bold
+            </span>
+          </div>
+        </div>
       </form>
     </div>
   );
