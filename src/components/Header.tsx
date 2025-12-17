@@ -116,16 +116,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </div>
 
         <div className="search-bar desktop-only">
-          <Search size={16} />
+          <Search size={18} strokeWidth={2} />
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search products, expenses, vendors..."
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <kbd className="search-kbd">⌘ K</kbd>
+          <kbd className="search-kbd">⌘K</kbd>
         </div>
       </div>
 
