@@ -4,87 +4,62 @@ import { Award, TrendingUp, CreditCard, Tag, CheckCircle } from 'lucide-react';
 interface PartnerAnalysisTabProps {
   expenses: any[];
   investments: any[];
+  allUsers: any[];
 }
 
-export default function PartnerAnalysisTab({ expenses, investments }: PartnerAnalysisTabProps) {
+export default function PartnerAnalysisTab({ expenses, investments, allUsers }: PartnerAnalysisTabProps) {
   const approvedExpenses = expenses.filter(e => e.status === 'approved');
   const approvedInvestments = investments.filter(i => i.status === 'approved');
 
-  const partnerData = approvedExpenses.reduce((acc, exp) => {
+  const partnerData: Record<string, any> = {};
+
+  allUsers.forEach(user => {
+    partnerData[user.id] = {
+      id: user.id,
+      name: user.name,
+      totalExpenses: 0,
+      totalInvestments: 0,
+      expenseCount: 0,
+      approvedCount: 0,
+      submittedCount: 0,
+      paymentModes: {} as Record<string, number>,
+      categories: {} as Record<string, number>,
+    };
+  });
+
+  approvedExpenses.forEach(exp => {
     const partnerId = exp.paid_by || exp.user_id;
-    const partnerName = exp.users_paid_by?.name || exp.users?.name || 'Unknown';
 
-    if (!acc[partnerId]) {
-      acc[partnerId] = {
-        id: partnerId,
-        name: partnerName,
-        totalExpenses: 0,
-        totalInvestments: 0,
-        expenseCount: 0,
-        approvedCount: 0,
-        submittedCount: 0,
-        paymentModes: {} as Record<string, number>,
-        categories: {} as Record<string, number>,
-      };
+    if (partnerData[partnerId]) {
+      partnerData[partnerId].totalExpenses += exp.amount;
+      partnerData[partnerId].expenseCount += 1;
+
+      if (exp.status === 'approved') {
+        partnerData[partnerId].approvedCount += 1;
+      }
+
+      const mode = exp.payment_mode || 'unknown';
+      partnerData[partnerId].paymentModes[mode] = (partnerData[partnerId].paymentModes[mode] || 0) + 1;
+
+      const category = exp.category;
+      partnerData[partnerId].categories[category] = (partnerData[partnerId].categories[category] || 0) + exp.amount;
     }
-
-    acc[partnerId].totalExpenses += exp.amount;
-    acc[partnerId].expenseCount += 1;
-
-    if (exp.status === 'approved') {
-      acc[partnerId].approvedCount += 1;
-    }
-
-    const mode = exp.payment_mode || 'unknown';
-    acc[partnerId].paymentModes[mode] = (acc[partnerId].paymentModes[mode] || 0) + 1;
-
-    const category = exp.category;
-    acc[partnerId].categories[category] = (acc[partnerId].categories[category] || 0) + exp.amount;
-
-    return acc;
-  }, {} as Record<string, any>);
+  });
 
   expenses.forEach(exp => {
     const submitterId = exp.submitted_by;
-    const submitterName = exp.users_submitted_by?.name;
 
-    if (submitterId && submitterName) {
-      if (!partnerData[submitterId]) {
-        partnerData[submitterId] = {
-          id: submitterId,
-          name: submitterName,
-          totalExpenses: 0,
-          totalInvestments: 0,
-          expenseCount: 0,
-          approvedCount: 0,
-          submittedCount: 0,
-          paymentModes: {},
-          categories: {},
-        };
-      }
+    if (submitterId && partnerData[submitterId]) {
       partnerData[submitterId].submittedCount += 1;
     }
   });
 
   approvedInvestments.forEach(inv => {
     const partnerId = inv.partner_id;
-    const partnerName = inv.users?.name;
 
-    if (!partnerData[partnerId]) {
-      partnerData[partnerId] = {
-        id: partnerId,
-        name: partnerName || 'Unknown',
-        totalExpenses: 0,
-        totalInvestments: 0,
-        expenseCount: 0,
-        approvedCount: 0,
-        submittedCount: 0,
-        paymentModes: {},
-        categories: {},
-      };
+    if (partnerData[partnerId]) {
+      partnerData[partnerId].totalInvestments += inv.amount;
     }
-
-    partnerData[partnerId].totalInvestments += inv.amount;
   });
 
   const partnerArray = Object.values(partnerData).sort((a, b) => b.totalInvestments - a.totalInvestments);
@@ -95,8 +70,14 @@ export default function PartnerAnalysisTab({ expenses, investments }: PartnerAna
     Expense: partner.totalExpenses,
   }));
 
-  const topInvestors = [...partnerArray].sort((a, b) => b.totalInvestments - a.totalInvestments).slice(0, 5);
-  const topSpenders = [...partnerArray].sort((a, b) => b.totalExpenses - a.totalExpenses).slice(0, 5);
+  const topInvestors = [...partnerArray]
+    .filter(p => p.totalInvestments > 0)
+    .sort((a, b) => b.totalInvestments - a.totalInvestments)
+    .slice(0, 5);
+  const topSpenders = [...partnerArray]
+    .filter(p => p.totalExpenses > 0)
+    .sort((a, b) => b.totalExpenses - a.totalExpenses)
+    .slice(0, 5);
   const topApprovalRate = [...partnerArray]
     .filter(p => p.submittedCount > 0)
     .sort((a, b) => (b.approvedCount / b.submittedCount) - (a.approvedCount / a.submittedCount))
@@ -260,25 +241,31 @@ export default function PartnerAnalysisTab({ expenses, investments }: PartnerAna
             <h3 className="font-heading text-xl font-bold text-primary">Top Investors</h3>
           </div>
           <div className="space-y-3">
-            {topInvestors.map((partner, index) => (
-              <div
-                key={partner.id}
-                className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
-              >
-                <span className="text-2xl font-bold text-accent/40">#{index + 1}</span>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent to-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">
-                    {getInitials(partner.name)}
-                  </span>
+            {topInvestors.length > 0 ? (
+              topInvestors.map((partner, index) => (
+                <div
+                  key={partner.id}
+                  className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
+                >
+                  <span className="text-2xl font-bold text-accent/40">#{index + 1}</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-accent to-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-sm">
+                      {getInitials(partner.name)}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
+                    <p className="text-lg font-bold text-accent">
+                      ₹{partner.totalInvestments.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
-                  <p className="text-lg font-bold text-accent">
-                    ₹{partner.totalInvestments.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-dark-brown/50">
+                <p className="text-sm">No investments recorded yet</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -290,25 +277,31 @@ export default function PartnerAnalysisTab({ expenses, investments }: PartnerAna
             <h3 className="font-heading text-xl font-bold text-primary">Active Spenders</h3>
           </div>
           <div className="space-y-3">
-            {topSpenders.map((partner, index) => (
-              <div
-                key={partner.id}
-                className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
-              >
-                <span className="text-2xl font-bold text-secondary/40">#{index + 1}</span>
-                <div className="w-10 h-10 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">
-                    {getInitials(partner.name)}
-                  </span>
+            {topSpenders.length > 0 ? (
+              topSpenders.map((partner, index) => (
+                <div
+                  key={partner.id}
+                  className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
+                >
+                  <span className="text-2xl font-bold text-secondary/40">#{index + 1}</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-sm">
+                      {getInitials(partner.name)}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
+                    <p className="text-lg font-bold text-secondary">
+                      ₹{partner.totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
-                  <p className="text-lg font-bold text-secondary">
-                    ₹{partner.totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-dark-brown/50">
+                <p className="text-sm">No expenses recorded yet</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -320,26 +313,32 @@ export default function PartnerAnalysisTab({ expenses, investments }: PartnerAna
             <h3 className="font-heading text-xl font-bold text-primary">Best Approval Rate</h3>
           </div>
           <div className="space-y-3">
-            {topApprovalRate.map((partner, index) => {
-              const rate = (partner.approvedCount / partner.submittedCount) * 100;
-              return (
-                <div
-                  key={partner.id}
-                  className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
-                >
-                  <span className="text-2xl font-bold text-sage/40">#{index + 1}</span>
-                  <div className="w-10 h-10 bg-gradient-to-br from-sage to-primary rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-white font-bold text-sm">
-                      {getInitials(partner.name)}
-                    </span>
+            {topApprovalRate.length > 0 ? (
+              topApprovalRate.map((partner, index) => {
+                const rate = (partner.approvedCount / partner.submittedCount) * 100;
+                return (
+                  <div
+                    key={partner.id}
+                    className="flex items-center gap-3 p-3 bg-white/60 rounded-lg"
+                  >
+                    <span className="text-2xl font-bold text-sage/40">#{index + 1}</span>
+                    <div className="w-10 h-10 bg-gradient-to-br from-sage to-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold text-sm">
+                        {getInitials(partner.name)}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
+                      <p className="text-lg font-bold text-sage">{rate.toFixed(0)}%</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-primary truncate">{partner.name}</p>
-                    <p className="text-lg font-bold text-sage">{rate.toFixed(0)}%</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-dark-brown/50">
+                <p className="text-sm">No submissions recorded yet</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

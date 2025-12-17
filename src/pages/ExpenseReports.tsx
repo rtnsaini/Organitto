@@ -14,6 +14,7 @@ export default function ExpenseReports() {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [investments, setInvestments] = useState<any[]>([]);
   const [vendors, setVendors] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function ExpenseReports() {
 
   const fetchData = async () => {
     try {
-      const [expensesRes, investmentsRes, vendorsRes] = await Promise.all([
+      const [expensesRes, investmentsRes, vendorsRes, usersRes] = await Promise.all([
         supabase
           .from('expenses')
           .select(`
@@ -46,15 +47,21 @@ export default function ExpenseReports() {
           .from('vendors')
           .select('*')
           .order('name'),
+        supabase
+          .from('users')
+          .select('id, name, email')
+          .order('name'),
       ]);
 
       if (expensesRes.error) throw expensesRes.error;
       if (investmentsRes.error) throw investmentsRes.error;
       if (vendorsRes.error) throw vendorsRes.error;
+      if (usersRes.error) throw usersRes.error;
 
       setExpenses(expensesRes.data || []);
       setInvestments(investmentsRes.data || []);
       setVendors(vendorsRes.data || []);
+      setAllUsers(usersRes.data || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -130,6 +137,7 @@ export default function ExpenseReports() {
                 <PartnerAnalysisTab
                   expenses={expenses}
                   investments={investments}
+                  allUsers={allUsers}
                 />
               )}
               {activeTab === 'monthly' && (
