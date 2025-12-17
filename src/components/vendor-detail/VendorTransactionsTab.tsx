@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Calendar, DollarSign, Filter } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import AddTransactionModal from './AddTransactionModal';
 
 interface VendorTransactionsTabProps {
   vendorId: string;
@@ -10,6 +11,7 @@ export default function VendorTransactionsTab({ vendorId }: VendorTransactionsTa
   const [transactions, setTransactions] = useState<any[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchTransactions();
@@ -62,7 +64,10 @@ export default function VendorTransactionsTab({ vendorId }: VendorTransactionsTa
           </select>
         </div>
 
-        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+        >
           <Plus className="w-5 h-5" />
           Add Transaction
         </button>
@@ -170,12 +175,26 @@ export default function VendorTransactionsTab({ vendorId }: VendorTransactionsTa
               No transactions found
             </h3>
             <p className="text-dark-brown/40 mb-4">Start by adding your first transaction</p>
-            <button className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+            >
               Add Transaction
             </button>
           </div>
         )}
       </div>
+
+      {showAddModal && (
+        <AddTransactionModal
+          vendorId={vendorId}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            fetchTransactions();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, FileText, Download, Trash2, File } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import AddDocumentModal from './AddDocumentModal';
 
 interface VendorDocumentsTabProps {
   vendorId: string;
@@ -18,6 +19,7 @@ const categories = [
 export default function VendorDocumentsTab({ vendorId }: VendorDocumentsTabProps) {
   const [documents, setDocuments] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchDocuments();
@@ -56,7 +58,10 @@ export default function VendorDocumentsTab({ vendorId }: VendorDocumentsTabProps
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h3 className="font-heading text-xl font-bold text-primary">Documents</h3>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+        >
           <Plus className="w-5 h-5" />
           Upload Document
         </button>
@@ -140,10 +145,24 @@ export default function VendorDocumentsTab({ vendorId }: VendorDocumentsTabProps
               ? 'Upload documents to keep vendor information organized'
               : `No ${getCategoryInfo(selectedCategory).label.toLowerCase()} uploaded yet`}
           </p>
-          <button className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+          >
             Upload Document
           </button>
         </div>
+      )}
+
+      {showAddModal && (
+        <AddDocumentModal
+          vendorId={vendorId}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            fetchDocuments();
+          }}
+        />
       )}
     </div>
   );

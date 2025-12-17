@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, TrendingUp, Package, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import AddPriceItemModal from './AddPriceItemModal';
 
 interface VendorPricesTabProps {
   vendorId: string;
@@ -8,6 +9,7 @@ interface VendorPricesTabProps {
 
 export default function VendorPricesTab({ vendorId }: VendorPricesTabProps) {
   const [prices, setPrices] = useState<any[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchPrices();
@@ -32,7 +34,10 @@ export default function VendorPricesTab({ vendorId }: VendorPricesTabProps) {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h3 className="font-heading text-xl font-bold text-primary">Price List</h3>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+        >
           <Plus className="w-5 h-5" />
           Add Price Item
         </button>
@@ -118,10 +123,24 @@ export default function VendorPricesTab({ vendorId }: VendorPricesTabProps) {
             No price items found
           </h3>
           <p className="text-dark-brown/40 mb-4">Add price items to track vendor pricing</p>
-          <button className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+          >
             Add Price Item
           </button>
         </div>
+      )}
+
+      {showAddModal && (
+        <AddPriceItemModal
+          vendorId={vendorId}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            fetchPrices();
+          }}
+        />
       )}
     </div>
   );

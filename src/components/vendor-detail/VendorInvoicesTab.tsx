@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, FileText, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import AddInvoiceModal from './AddInvoiceModal';
 
 interface VendorInvoicesTabProps {
   vendorId: string;
@@ -8,6 +9,7 @@ interface VendorInvoicesTabProps {
 
 export default function VendorInvoicesTab({ vendorId }: VendorInvoicesTabProps) {
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchInvoices();
@@ -59,7 +61,10 @@ export default function VendorInvoicesTab({ vendorId }: VendorInvoicesTabProps) 
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h3 className="font-heading text-xl font-bold text-primary">Invoice Management</h3>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+        >
           <Plus className="w-5 h-5" />
           Upload Invoice
         </button>
@@ -162,12 +167,26 @@ export default function VendorInvoicesTab({ vendorId }: VendorInvoicesTabProps) 
               No invoices found
             </h3>
             <p className="text-dark-brown/40 mb-4">Upload your first invoice to get started</p>
-            <button className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-6 py-3 bg-gradient-to-r from-primary to-sage text-white rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+            >
               Upload Invoice
             </button>
           </div>
         )}
       </div>
+
+      {showAddModal && (
+        <AddInvoiceModal
+          vendorId={vendorId}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            fetchInvoices();
+          }}
+        />
+      )}
     </div>
   );
 }
