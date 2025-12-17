@@ -356,7 +356,7 @@ export default function ExpenseList() {
           </div>
 
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft p-6 mb-6">
-            <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 mb-6 mt-2 overflow-x-auto pb-6 pt-2 scrollbar-thin">
               {(['all', 'pending', 'approved', 'rejected', 'my_expenses'] as FilterTab[]).map(tab => (
                 <button
                   key={tab}
