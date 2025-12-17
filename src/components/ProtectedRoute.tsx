@@ -25,6 +25,10 @@ export default function ProtectedRoute({ children, adminOnly = false }: Protecte
     return <Navigate to="/login" replace />;
   }
 
+  if (user.approval_status !== 'approved') {
+    return <Navigate to="/login" replace />;
+  }
+
   if (adminOnly && user.role !== 'admin') {
     return (
       <div className="min-h-screen bg-gradient-mesh flex items-center justify-center p-4">

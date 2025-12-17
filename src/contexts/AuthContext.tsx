@@ -7,6 +7,7 @@ interface User {
   name: string;
   phone?: string;
   role: 'admin' | 'partner';
+  approval_status: 'pending' | 'approved' | 'rejected';
 }
 
 interface AuthContextType {
@@ -60,6 +61,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error;
       if (data) {
+        if (data.approval_status !== 'approved') {
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
         setUser(data);
       }
     } catch (error) {
