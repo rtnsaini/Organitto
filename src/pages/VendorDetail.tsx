@@ -7,7 +7,9 @@ import VendorInvoicesTab from '../components/vendor-detail/VendorInvoicesTab';
 import VendorPricesTab from '../components/vendor-detail/VendorPricesTab';
 import VendorDocumentsTab from '../components/vendor-detail/VendorDocumentsTab';
 import VendorNotesTab from '../components/vendor-detail/VendorNotesTab';
+import EditVendorModal from '../components/EditVendorModal';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -33,9 +35,11 @@ const getCategoryColor = (category: string) => {
 export default function VendorDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [vendor, setVendor] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -158,22 +162,24 @@ export default function VendorDetail() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => {}}
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl font-semibold hover:bg-primary/20 transition-colors"
-              >
-                <Edit className="w-4 h-4" />
-                Edit
-              </button>
-              <button
-                onClick={handleDelete}
-                className="flex items-center gap-2 px-4 py-2 bg-soft-red/10 text-soft-red rounded-xl font-semibold hover:bg-soft-red/20 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </button>
-            </div>
+            {user?.role === 'admin' && (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl font-semibold hover:bg-primary/20 transition-colors"
+                >
+                  <Edit className="w-4 h-4" />
+                  Edit
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="flex items-center gap-2 px-4 py-2 bg-soft-red/10 text-soft-red rounded-xl font-semibold hover:bg-soft-red/20 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -210,6 +216,17 @@ export default function VendorDetail() {
           </div>
         </div>
       </div>
+
+      {showEditModal && vendor && (
+        <EditVendorModal
+          vendor={vendor}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={() => {
+            setShowEditModal(false);
+            fetchVendor();
+          }}
+        />
+      )}
     </div>
   );
 }

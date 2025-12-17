@@ -181,7 +181,7 @@ export default function Vendors() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-soft p-4 mb-6">
+        <div className="bg-white rounded-xl shadow-soft p-4 my-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto">
               {categories.map(cat => {

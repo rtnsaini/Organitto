@@ -22,6 +22,7 @@ export default function VendorNotesTab({ vendorId, vendorRating }: VendorNotesTa
   const [reviews, setReviews] = useState<any[]>([]);
   const [newNote, setNewNote] = useState('');
   const [showAddReview, setShowAddReview] = useState(false);
+  const [editingReview, setEditingReview] = useState<any>(null);
   const [newReview, setNewReview] = useState({
     category: 'quality',
     rating: 5,
@@ -111,6 +112,61 @@ export default function VendorNotesTab({ vendorId, vendorRating }: VendorNotesTa
       console.error('Error adding review:', error);
       alert('Error adding review');
     }
+  };
+
+  const handleUpdateReview = async () => {
+    if (!editingReview || !editingReview.review_text.trim()) {
+      alert('Please write a review');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('vendor_reviews')
+        .update({
+          category: editingReview.category,
+          rating: editingReview.rating,
+          review_text: editingReview.review_text,
+        })
+        .eq('id', editingReview.id);
+
+      if (error) throw error;
+
+      setEditingReview(null);
+      fetchReviews();
+    } catch (error) {
+      console.error('Error updating review:', error);
+      alert('Error updating review');
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!confirm('Are you sure you want to delete this review?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('vendor_reviews')
+        .delete()
+        .eq('id', reviewId);
+
+      if (error) throw error;
+
+      fetchReviews();
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('Error deleting review');
+    }
+  };
+
+  const startEditingReview = (review: any) => {
+    setEditingReview({ ...review });
+    setShowAddReview(false);
+  };
+
+  const cancelEditingReview = () => {
+    setEditingReview(null);
   };
 
   const renderStars = (rating: number, interactive: boolean = false, onRate?: (rating: number) => void) => {
@@ -212,7 +268,10 @@ export default function VendorNotesTab({ vendorId, vendorRating }: VendorNotesTa
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading text-xl font-bold text-primary">Ratings & Reviews</h3>
             <button
-              onClick={() => setShowAddReview(!showAddReview)}
+              onClick={() => {
+                setShowAddReview(!showAddReview);
+                setEditingReview(null);
+              }}
               className="flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 text-accent rounded-xl font-semibold transition-colors"
             >
               <Plus className="w-5 h-5" />
@@ -313,21 +372,106 @@ export default function VendorNotesTab({ vendorId, vendorRating }: VendorNotesTa
             {reviews.length > 0 ? (
               reviews.map(review => {
                 const category = reviewCategories.find(c => c.id === review.category);
+                const isEditing = editingReview?.id === review.id;
+
+                if (isEditing) {
+                  return (
+                    <div
+                      key={review.id}
+                      className="bg-cream/50 rounded-xl p-4"
+                    >
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-dark-brown mb-2">
+                            Category
+                          </label>
+                          <select
+                            value={editingReview.category}
+                            onChange={(e) => setEditingReview({ ...editingReview, category: e.target.value })}
+                            className="w-full px-4 py-2 border-2 border-dark-brown/10 rounded-lg focus:border-accent focus:outline-none"
+                          >
+                            {reviewCategories.map(cat => (
+                              <option key={cat.id} value={cat.id}>
+                                {cat.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-dark-brown mb-2">
+                            Rating
+                          </label>
+                          {renderStars(editingReview.rating, true, (rating) =>
+                            setEditingReview({ ...editingReview, rating })
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-dark-brown mb-2">
+                            Review
+                          </label>
+                          <textarea
+                            value={editingReview.review_text}
+                            onChange={(e) => setEditingReview({ ...editingReview, review_text: e.target.value })}
+                            placeholder="Write your review..."
+                            rows={3}
+                            className="w-full px-4 py-3 border-2 border-dark-brown/10 rounded-xl focus:border-accent focus:outline-none resize-none"
+                          />
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={cancelEditingReview}
+                            className="flex-1 px-4 py-2 bg-white border-2 border-dark-brown/10 text-dark-brown font-semibold rounded-xl hover:bg-dark-brown/5 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleUpdateReview}
+                            className="flex-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold rounded-xl hover:shadow-soft-lg transition-all"
+                          >
+                            Update Review
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div
                     key={review.id}
                     className="bg-white border-2 border-dark-brown/5 rounded-xl p-4"
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-xs font-semibold">
-                          {category?.label}
-                        </span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-xs font-semibold">
+                            {category?.label}
+                          </span>
+                        </div>
                         {renderStars(review.rating)}
                       </div>
-                      <p className="text-xs text-dark-brown/60">
-                        {new Date(review.created_at).toLocaleDateString()}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-dark-brown/60">
+                          {new Date(review.created_at).toLocaleDateString()}
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => startEditingReview(review)}
+                            className="p-1 hover:bg-primary/10 text-primary rounded transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteReview(review.id)}
+                            className="p-1 hover:bg-soft-red/10 text-soft-red rounded transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     <p className="text-sm text-dark-brown">{review.review_text}</p>
                   </div>
