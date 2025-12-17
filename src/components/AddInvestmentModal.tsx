@@ -46,7 +46,6 @@ export default function AddInvestmentModal({
     purpose: '',
     notes: '',
     paymentProofFile: null as File | null,
-    requireApproval: false,
   });
 
   const isAdmin = user?.role === 'admin';
@@ -133,8 +132,6 @@ export default function AddInvestmentModal({
         paymentProofUrl = await uploadPaymentProof(formData.paymentProofFile);
       }
 
-      const status = isAdmin && !formData.requireApproval ? 'approved' : 'pending';
-
       const investmentData: any = {
         partner_id: formData.partnerId,
         amount,
@@ -142,14 +139,9 @@ export default function AddInvestmentModal({
         purpose: formData.purpose,
         notes: formData.notes || null,
         payment_proof_url: paymentProofUrl,
-        status,
+        status: 'pending',
         submitted_by: user?.id,
       };
-
-      if (status === 'approved') {
-        investmentData.approved_by = user?.id;
-        investmentData.approved_at = new Date().toISOString();
-      }
 
       const { error: insertError } = await supabase
         .from('investments')
@@ -183,7 +175,6 @@ export default function AddInvestmentModal({
       purpose: '',
       notes: '',
       paymentProofFile: null,
-      requireApproval: false,
     });
     setSearchTerm('');
   };
@@ -390,20 +381,16 @@ export default function AddInvestmentModal({
             </p>
           </div>
 
-          {isAdmin && (
-            <div className="flex items-center gap-3 p-4 bg-accent/5 rounded-xl">
-              <input
-                type="checkbox"
-                id="require-approval"
-                checked={formData.requireApproval}
-                onChange={(e) => setFormData({ ...formData, requireApproval: e.target.checked })}
-                className="w-5 h-5 rounded border-2 border-accent text-accent focus:ring-accent"
-              />
-              <label htmlFor="require-approval" className="text-sm text-dark-brown cursor-pointer">
-                Require approval (otherwise auto-approve as admin)
-              </label>
+          <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
+            <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-blue-600" />
             </div>
-          )}
+            <p className="text-sm text-dark-brown">
+              {isAdmin
+                ? "This investment will require your approval before being recorded."
+                : "This investment will be submitted for admin approval."}
+            </p>
+          </div>
 
           <div className="flex gap-3 pt-4 border-t border-dark-brown/10">
             <button
