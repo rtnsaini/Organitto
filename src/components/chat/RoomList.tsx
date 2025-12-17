@@ -17,6 +17,7 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [showAllUsers, setShowAllUsers] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -125,6 +126,50 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
     room.display_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredUsers = allUsers.filter(u =>
+    u.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleUserClick = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('get_or_create_direct_chat', {
+        user1_id: user?.id,
+        user2_id: userId
+      });
+
+      if (error) throw error;
+
+      const { data: roomData } = await supabase
+        .from('chat_user_rooms')
+        .select('*')
+        .eq('room_id', data)
+        .eq('user_id', user?.id || '')
+        .maybeSingle();
+
+      if (roomData) {
+        const otherUserId = roomData.participant_ids.find((id: string) => id !== user?.id);
+        const { data: otherUser } = await supabase
+          .from('users')
+          .select('id, name, email, role')
+          .eq('id', otherUserId)
+          .maybeSingle();
+
+        const fullRoomData = {
+          ...roomData,
+          display_name: otherUser?.name || otherUser?.email?.split('@')[0] || 'User',
+          display_icon: '👤',
+          other_user: otherUser
+        };
+
+        onSelectRoom(fullRoomData);
+        setShowAllUsers(false);
+      }
+    } catch (error) {
+      console.error('Error creating/opening chat:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-white/50 to-cream/30">
       <div className="p-4 border-b border-white/40">
@@ -143,11 +188,15 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
 
         <div className="flex gap-2">
           <button
-            onClick={onNewChat}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-br from-primary to-sage text-white rounded-xl font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+            onClick={() => setShowAllUsers(!showAllUsers)}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 active:scale-95 ${
+              showAllUsers
+                ? 'bg-gradient-to-br from-primary to-sage text-white'
+                : 'bg-white/80 border-2 border-primary/20 text-primary'
+            }`}
           >
-            <MessageCircle className="w-4 h-4" />
-            <span>New Chat</span>
+            <Users className="w-4 h-4" />
+            <span>Users</span>
           </button>
           <button
             onClick={onNewGroup}
@@ -158,10 +207,71 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
         </div>
       </div>
 
+      {showAllUsers && (
+        <div className="border-b-2 border-white/40 bg-white/30 p-3">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-bold text-dark-brown/70 uppercase tracking-wider">
+              All Users ({allUsers.length})
+            </h3>
+            <button
+              onClick={() => setShowAllUsers(false)}
+              className="text-xs text-primary font-semibold hover:underline"
+            >
+              Show Chats
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex-1 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : showAllUsers ? (
+          <div className="p-2">
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((u) => (
+                <button
+                  key={u.id}
+                  onClick={() => handleUserClick(u.id)}
+                  className="w-full p-3 rounded-xl mb-2 transition-all text-left bg-white/60 border-2 border-white/40 hover:border-primary/20 hover:shadow-md"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-sage to-secondary flex items-center justify-center text-white font-bold text-lg border-2 border-white/50">
+                      {(u.name || u.email)?.[0]?.toUpperCase()}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-bold text-primary truncate text-sm">
+                          {u.name || u.email?.split('@')[0] || 'User'}
+                        </h3>
+                        {u.role === 'admin' && (
+                          <Crown className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-xs text-dark-brown/60 truncate font-medium">
+                        {u.email}
+                      </p>
+                    </div>
+
+                    <div className="flex-shrink-0">
+                      <MessageCircle className="w-5 h-5 text-primary/60" />
+                    </div>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 px-4">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-sage/10 flex items-center justify-center mb-4">
+                  <Users className="w-10 h-10 text-primary/40" />
+                </div>
+                <p className="text-sm text-dark-brown/60 font-medium text-center">
+                  No users found
+                </p>
+              </div>
+            )}
           </div>
         ) : filteredRooms.length > 0 ? (
           <div className="p-2">
