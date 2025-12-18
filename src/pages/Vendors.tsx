@@ -49,12 +49,26 @@ export default function Vendors() {
         .from('vendor_transactions')
         .select('vendor_id, amount, status');
 
+      const { data: expensesData } = await supabase
+        .from('expenses')
+        .select('vendor_id, amount, status')
+        .not('vendor_id', 'is', null);
+
       const vendorsWithStats = (vendorsData || []).map(vendor => {
         const vendorTransactions = transactionsData?.filter(t => t.vendor_id === vendor.id) || [];
-        const totalSpent = vendorTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-        const pendingAmount = vendorTransactions
+        const vendorExpenses = expensesData?.filter(e => e.vendor_id === vendor.id) || [];
+
+        const transactionTotal = vendorTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+        const expenseTotal = vendorExpenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+        const totalSpent = transactionTotal + expenseTotal;
+
+        const transactionPending = vendorTransactions
           .filter(t => t.status === 'pending')
           .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+        const expensePending = vendorExpenses
+          .filter(e => e.status === 'pending')
+          .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+        const pendingAmount = transactionPending + expensePending;
 
         return {
           ...vendor,

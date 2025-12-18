@@ -31,23 +31,31 @@ export default function VendorOverviewTab({ vendor }: VendorOverviewTabProps) {
         .select('*')
         .eq('vendor_id', vendor.id);
 
-      if (!transactions) return;
+      const { data: expenses } = await supabase
+        .from('expenses')
+        .select('amount, expense_date, status')
+        .eq('vendor_id', vendor.id);
+
+      const allItems = [
+        ...(transactions || []).map(t => ({ amount: t.amount, date: t.date, status: t.status })),
+        ...(expenses || []).map(e => ({ amount: e.amount, date: e.expense_date, status: e.status })),
+      ];
 
       const now = new Date();
-      const thisMonth = transactions.filter(t => {
+      const thisMonth = allItems.filter(t => {
         const tDate = new Date(t.date);
         return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
       });
 
-      const thisYear = transactions.filter(t => {
+      const thisYear = allItems.filter(t => {
         const tDate = new Date(t.date);
         return tDate.getFullYear() === now.getFullYear();
       });
 
-      const totalSpent = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      const totalSpent = allItems.reduce((sum, t) => sum + parseFloat(t.amount), 0);
       const thisMonthSpent = thisMonth.reduce((sum, t) => sum + parseFloat(t.amount), 0);
       const thisYearSpent = thisYear.reduce((sum, t) => sum + parseFloat(t.amount), 0);
-      const pending = transactions
+      const pending = allItems
         .filter(t => t.status === 'pending')
         .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
@@ -55,9 +63,9 @@ export default function VendorOverviewTab({ vendor }: VendorOverviewTabProps) {
         totalSpent,
         thisMonth: thisMonthSpent,
         thisYear: thisYearSpent,
-        avgTransaction: transactions.length > 0 ? totalSpent / transactions.length : 0,
+        avgTransaction: allItems.length > 0 ? totalSpent / allItems.length : 0,
         pendingPayment: pending,
-        totalTransactions: transactions.length,
+        totalTransactions: allItems.length,
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -72,10 +80,19 @@ export default function VendorOverviewTab({ vendor }: VendorOverviewTabProps) {
         .eq('vendor_id', vendor.id)
         .order('date');
 
-      if (!transactions) return;
+      const { data: expenses } = await supabase
+        .from('expenses')
+        .select('expense_date, amount')
+        .eq('vendor_id', vendor.id)
+        .order('expense_date');
+
+      const allItems = [
+        ...(transactions || []).map(t => ({ date: t.date, amount: t.amount })),
+        ...(expenses || []).map(e => ({ date: e.expense_date, amount: e.amount })),
+      ];
 
       const monthlyData: any = {};
-      transactions.forEach(t => {
+      allItems.forEach(t => {
         const date = new Date(t.date);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         if (!monthlyData[monthKey]) {
