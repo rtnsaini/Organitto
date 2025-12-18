@@ -58,8 +58,7 @@ export default function NewChatModal({ onClose, onChatCreated }: NewChatModalPro
     setCreating(true);
     try {
       const { data, error } = await supabase.rpc('get_or_create_direct_chat', {
-        user1_id: user.id,
-        user2_id: otherUserId
+        other_user_id: otherUserId
       });
 
       if (error) throw error;

@@ -31,16 +31,40 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('chat_user_rooms')
+      const { data: roomsData, error } = await supabase
+        .from('chat_rooms')
         .select('*')
-        .eq('user_id', user.id)
-        .order('last_message_at', { ascending: false, nullsFirst: false });
+        .contains('participant_ids', [user.id])
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const roomsWithUsers = await Promise.all(
-        (data || []).map(async (room) => {
+      const roomsWithDetails = await Promise.all(
+        (roomsData || []).map(async (room) => {
+          const { data: membership } = await supabase
+            .from('chat_room_members')
+            .select('last_read_at')
+            .eq('room_id', room.id)
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          const { data: lastMessage } = await supabase
+            .from('chat_messages')
+            .select('message_text, created_at, sender_id')
+            .eq('room_id', room.id)
+            .eq('is_deleted', false)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          const { data: unreadMessages } = await supabase
+            .from('chat_messages')
+            .select('id', { count: 'exact', head: true })
+            .eq('room_id', room.id)
+            .neq('sender_id', user.id)
+            .eq('is_deleted', false)
+            .gt('created_at', membership?.last_read_at || '1970-01-01');
+
           if (room.is_direct && room.participant_ids?.length === 2) {
             const otherUserId = room.participant_ids.find((id: string) => id !== user.id);
             const { data: otherUser } = await supabase
@@ -50,21 +74,45 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
               .maybeSingle();
 
             return {
-              ...room,
+              room_id: room.id,
+              name: room.name,
+              type: room.type,
+              is_direct: room.is_direct,
+              participant_ids: room.participant_ids,
+              icon: room.icon,
+              description: room.description,
+              unread_count: unreadMessages?.count || 0,
+              last_message_text: lastMessage?.message_text || null,
+              last_message_at: lastMessage?.created_at || null,
               display_name: otherUser?.name || otherUser?.email?.split('@')[0] || 'User',
               display_icon: '👤',
               other_user: otherUser
             };
           }
           return {
-            ...room,
+            room_id: room.id,
+            name: room.name,
+            type: room.type,
+            is_direct: room.is_direct,
+            participant_ids: room.participant_ids,
+            icon: room.icon,
+            description: room.description,
+            unread_count: unreadMessages?.count || 0,
+            last_message_text: lastMessage?.message_text || null,
+            last_message_at: lastMessage?.created_at || null,
             display_name: room.name,
-            display_icon: room.icon
+            display_icon: room.icon || '💬'
           };
         })
       );
 
-      setRooms(roomsWithUsers);
+      roomsWithDetails.sort((a, b) => {
+        const dateA = a.last_message_at ? new Date(a.last_message_at).getTime() : 0;
+        const dateB = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setRooms(roomsWithDetails);
     } catch (error) {
       console.error('Error fetching rooms:', error);
     } finally {
@@ -134,17 +182,15 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
   const handleUserClick = async (userId: string) => {
     try {
       const { data, error } = await supabase.rpc('get_or_create_direct_chat', {
-        user1_id: user?.id,
-        user2_id: userId
+        other_user_id: userId
       });
 
       if (error) throw error;
 
       const { data: roomData } = await supabase
-        .from('chat_user_rooms')
+        .from('chat_rooms')
         .select('*')
-        .eq('room_id', data)
-        .eq('user_id', user?.id || '')
+        .eq('id', data)
         .maybeSingle();
 
       if (roomData) {
@@ -156,7 +202,16 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
           .maybeSingle();
 
         const fullRoomData = {
-          ...roomData,
+          room_id: roomData.id,
+          name: roomData.name,
+          type: roomData.type,
+          is_direct: roomData.is_direct,
+          participant_ids: roomData.participant_ids,
+          icon: roomData.icon,
+          description: roomData.description,
+          unread_count: 0,
+          last_message_text: null,
+          last_message_at: null,
           display_name: otherUser?.name || otherUser?.email?.split('@')[0] || 'User',
           display_icon: '👤',
           other_user: otherUser
@@ -164,6 +219,7 @@ export default function RoomList({ onSelectRoom, selectedRoomId, onNewChat, onNe
 
         onSelectRoom(fullRoomData);
         setShowAllUsers(false);
+        fetchRooms();
       }
     } catch (error) {
       console.error('Error creating/opening chat:', error);
