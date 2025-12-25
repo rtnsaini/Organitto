@@ -141,18 +141,20 @@ export default function CreateGroupModal({ onClose, onGroupCreated }: CreateGrou
             placeholder="Group name..."
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
-            className="w-full px-4 py-3 bg-white/80 border-2 border-white/60 rounded-xl focus:outline-none focus:border-primary/40 text-base font-semibold placeholder:text-dark-brown/40 mb-3"
+            className="w-full px-5 py-4 bg-white/90 border-2 border-white/60 rounded-2xl focus:outline-none focus:border-primary/50 focus:shadow-xl focus:bg-white transition-all text-base font-bold placeholder:text-dark-brown/40 mb-4 shadow-lg backdrop-blur-sm hover:border-primary/30"
             maxLength={50}
           />
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-brown/40" />
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary/10 to-sage/10 rounded-xl">
+              <Search className="w-5 h-5 text-primary" strokeWidth={2.5} />
+            </div>
             <input
               type="text"
               placeholder="Search members..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white/80 border-2 border-white/60 rounded-xl focus:outline-none focus:border-primary/40 text-sm font-medium placeholder:text-dark-brown/40"
+              className="w-full pl-[4.5rem] pr-5 py-4 bg-white/90 border-2 border-white/60 rounded-2xl focus:outline-none focus:border-primary/50 focus:shadow-xl focus:bg-white transition-all text-base font-semibold placeholder:text-dark-brown/40 shadow-lg backdrop-blur-sm hover:border-primary/30"
             />
           </div>
         </div>
